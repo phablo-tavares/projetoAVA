@@ -1,0 +1,134 @@
+{% extends "menu.html" %} {% block content %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header"></div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Info boxes -->
+      <div class="row">
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-dark elevation-1"
+              ><i class="fas fa-user-graduate"></i
+            ></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text"
+                >{% if aluno.sexo == "M" %}Aluno {% else %}Aluna{% endif %}</span
+              >
+              <span class="info-box-number">{{aluno.nome}}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Situação</span>
+              <span class="info-box-number">Ativo</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <div class="clearfix hidden-md-up"></div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-dark elevation-1"><i class="fa fa-book"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Polo</span>
+              <span class="info-box-number">Goiânia</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="info-box mb-3">
+            <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-money-bill"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Pagamento</span>
+              <span class="info-box-number">Pago</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+      </div>
+
+      <!-- /.row -->
+      <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h5><i class="icon fas fa-exclamation-triangle"></i> Notificação!</h5>
+        Caro aluno, esta é uma notificação do sistema AVA!
+      </div>
+      {% if messages %} {% for message in messages%}
+      <div
+        {%
+        if
+        message.tags
+        %}
+        class="{{ message.tags }}"
+        {%
+        endif
+        %}
+        style="text-align: center"
+        role="alert"
+      >
+        {{message}}
+      </div>
+      {% endfor %} {% endif %}
+
+      <!-- /.row -->
+      <div id="card-container-pagina-principal">
+        <div class="card card-dark">
+          <div class="card-header">
+            <h3 class="card-title">Cursos Matriculados</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="row">
+              {% for curso in cursosMatriculados %}
+              <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                  <button
+                    href=""
+                    class="btn btn-block bg-gradient-red"
+                    onclick="ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{ csrf_token }}','{{curso.id}}')"
+                  >
+                    <b> <i class="fas fa-book"></i> {{curso.nome}}</b>
+                  </button>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!--/. container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<input type="hidden" id="token" name="token" value="{{ csrf_token }}" />
+<input type="hidden" id="alunoId" name="alunoId" value="{{ aluno.id }}" />
+{% endblock content %}

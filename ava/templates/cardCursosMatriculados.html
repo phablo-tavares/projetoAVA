@@ -1,0 +1,24 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <h3 class="card-title">Cursos Matriculados</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    <div class="row">
+      {% for curso in cursosMatriculados %}
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card-body">
+          <button
+            href=""
+            class="btn btn-block bg-gradient-red"
+            onclick="ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{ csrf_token }}','{{curso.id}}')"
+          >
+            <b> <i class="fas fa-book"></i> {{curso.nome}}</b>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- /.card-body -->
+</div>

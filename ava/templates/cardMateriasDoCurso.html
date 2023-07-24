@@ -1,0 +1,27 @@
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      onclick="exibirCardDosCursosNaPaginaPrincipal('{{csrf_token}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title">Matérias - {{curso.nome}}</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    <div class="row">
+      {% for materia in materiasDoCurso %}
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card-body">
+          <button href="" class="btn btn-block bg-gradient-red">
+            <b> <i class="fas fa-book"></i> {{materia.nome}}</b>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- /.card-body -->
+</div>
