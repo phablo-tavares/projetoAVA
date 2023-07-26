@@ -1,0 +1,5 @@
+funcionalidades para implementar
+
+acessar uma matéria
+visualizar os anexos
+botão para realizar a prova caso o usuário seja autorizado

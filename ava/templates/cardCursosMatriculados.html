@@ -11,7 +11,7 @@
           <button
             href=""
             class="btn btn-block bg-gradient-red"
-            onclick="ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{ csrf_token }}','{{curso.id}}')"
+            onclick="registrarCursoAtual('{{curso.id}}') ; ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{ csrf_token }}')"
           >
             <b> <i class="fas fa-book"></i> {{curso.nome}}</b>
           </button>

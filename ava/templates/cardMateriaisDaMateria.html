@@ -1,0 +1,40 @@
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      onclick="ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{csrf_token}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title">Materiais - {{materia.nome}}</h3>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    {% if perms.ava.podeFazerProvas %}
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card-body">
+          <button href="" class="btn btn-block bg-gradient-red">
+            <i class="bi bi-pencil-square"></i>Fazer a prova: {{prova.nome}}
+          </button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="border-top border-dark">Anexos da Matéria:</div>
+    <div class="row">
+      {% for material in materiais %}
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card-body">
+          <a href="{{material.anexo.url}}" target="_blank" class="btn btn-block bg-gradient-red">
+            <b><i class="fas fa-book"></i>{{material.nomeDoMaterial}}</b>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- /.card-body -->
+</div>
