@@ -2,7 +2,7 @@
   <div class="card-header">
     <h3 class="card-title">Cursos Matriculados</h3>
   </div>
-  <!-- /.card-header -->
+
   <div class="card-body">
     <div class="row">
       {% for curso in cursosMatriculados %}
@@ -11,7 +11,7 @@
           <button
             href=""
             class="btn btn-block bg-gradient-red"
-            onclick="registrarCursoAtual('{{curso.id}}') ; ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{ csrf_token }}')"
+            onclick="registrarCursoAtual('{{curso.id}}') ; ExibirCardDasMateriasDoCurso('{{urlMateriasDoCurso}}','{{ csrf_token }}','{{curso.id}}')"
           >
             <b> <i class="fas fa-book"></i> {{curso.nome}}</b>
           </button>
@@ -20,5 +20,4 @@
       {% endfor %}
     </div>
   </div>
-  <!-- /.card-body -->
 </div>

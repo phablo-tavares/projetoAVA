@@ -68,21 +68,6 @@ class Matricula(models.Model):
         db_table = 'matriculas'
 
 
-class Prova(models.Model):
-    id = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=255)
-    materia = models.OneToOneField(Materia, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        db_table = 'provas'
-
-
-class PermissaoRealizarProva(models.Model):
-    class Meta:
-        permissions = [("podeFazerProvas", "aluno pode realizar a prova")]
 
 
 class Material(models.Model):
@@ -96,3 +81,64 @@ class Material(models.Model):
 
     class Meta:
         db_table = 'materiais'
+
+
+class PermissaoRealizarProva(models.Model):
+    class Meta:
+        permissions = [("podeFazerProvas", "aluno pode realizar a prova")]
+
+
+class Prova(models.Model):
+    id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=255)
+    materia = models.OneToOneField(Materia, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        db_table = 'provas'
+
+
+class Questao(models.Model):
+    id = models.AutoField(primary_key=True)
+    enunciado = models.CharField(max_length=255)
+    alternativa1 = models.CharField(max_length=255)
+    alternativa2 = models.CharField(max_length=255)
+    alternativa3 = models.CharField(max_length=255)
+    alternativa4 = models.CharField(max_length=255)
+    alternativaCorreta = models.IntegerField()
+    prova = models.ForeignKey(Prova, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.enunciado
+
+    class Meta:
+        db_table = 'questoes'
+
+
+class ProvaRealizadaPeloAluno(models.Model):
+    id = models.AutoField(primary_key=True)
+    prova = models.ForeignKey(Prova)
+    aluno = models.ForeignKey(Aluno)
+    finalizouAProva = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'prova de ${self.prova.nome} realizada pelo aluno ${self.aluno.nome}'
+    
+    class Meta:
+        db_table = 'provas realizadas pelos alunos'
+
+
+class QuestaoDaProvaRealizadaPeloAluno(models.Model):
+    id = models.AutoField(primary_key=True)
+    provaRealizada = models.ForeignKey(ProvaRealizadaPeloAluno)
+    alternativaEscolhida = models.IntegerField()
+    acertouAQuestao = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'questão d prova de ${self.prova.nome} realizada pelo aluno ${self.aluno.nome}'
+    
+    class Meta:
+        db_table = 'questões das provas realizadas pelos alunos'
+

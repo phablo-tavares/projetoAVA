@@ -1,5 +1,12 @@
-function insertDataInsideTag(tagSelector, conteudo) {
-  $(tagSelector).html(conteudo);
+$(document).ready(function () {
+  let url = "/card-cursos-matriculados";
+  let idAluno = $("#alunoId").val();
+  let token = $("#token").val();
+  exibirCardDosCursos(url, token, idAluno);
+});
+
+function ToggleInformacoesAluno() {
+  $("#informacoesAluno").toggle();
 }
 
 function registrarCursoAtual(cursoId) {
@@ -7,15 +14,16 @@ function registrarCursoAtual(cursoId) {
   $("#idCursoAtual").val(cursoId);
 }
 
-// prettier-ignore
-function exibirCardDosCursos() {
-  let url = "/card-cursos-matriculados"
-  let alunoId = $('#alunoId').val();
-  let token = $('#token').val();
+function insertDataInsideTag(tagSelector, content) {
+  $(tagSelector).html(content);
+}
+//prettier-ignore
+function inserirCardNaPaginaPricipal(url,token,id){
+  id = Number(id)
   $.ajax({
     url: url,
     type: "get",
-    data: { 'alunoId': alunoId },
+    data: { 'id': id },
     headers: { "X-CSRFToken": token },
     success: function (data) {
       insertDataInsideTag("#card-container-pagina-principal",data);
@@ -23,34 +31,25 @@ function exibirCardDosCursos() {
   });
 }
 
-// prettier-ignore
-function ExibirCardDasMateriasDoCurso(url, token) {
-  let idCurso = $("#idCursoAtual").val(); //implementei desta maneira para que ao voltar do card dos materiais para o card das matérias de um curso, seja possível saber qual curso foi acessado, já que a relação entre cursos e matérias é many to many
-  $.ajax({
-    url: url,
-    type: "get",
-    data: { 'idDoCurso': idCurso },
-    headers: { "X-CSRFToken": token },
-    success: function (data) {
-      insertDataInsideTag("#card-container-pagina-principal",data);
-    },
-  });
+function exibirCardDosCursos(url, token, idAluno) {
+  inserirCardNaPaginaPricipal(url, token, idAluno);
 }
-
-// prettier-ignore
+function ExibirCardDasMateriasDoCurso(url, token, idCurso) {
+  inserirCardNaPaginaPricipal(url, token, idCurso);
+}
 function exibirCardDosMateriaisDaMateria(url, token, idMateria) {
-  let idDaMateria = Number(idMateria);
-  $.ajax({
-    url: url,
-    type: "get",
-    data: { 'idDaMateria': idDaMateria },
-    headers: { "X-CSRFToken": token },
-    success: function (data) {
-      insertDataInsideTag("#card-container-pagina-principal",data);
-    },
-  });
+  inserirCardNaPaginaPricipal(url, token, idMateria);
+}
+function ExibirCardDaProva(url, token, idProva) {
+  inserirCardNaPaginaPricipal(url, token, idProva);
 }
 
-$(document).ready(function () {
-  exibirCardDosCursos();
-});
+function voltarDaMateriaParaOCursoAtual(url, token) {
+  let idDoAluno = $("#alunoId").val();
+  exibirCardDosCursos(url, token, idDoAluno);
+}
+
+function voltarDoMaterialParaAMateriaAtual(url, token) {
+  let idDoCurso = $("#idCursoAtual").val();
+  ExibirCardDasMateriasDoCurso(url, token, idDoCurso);
+}

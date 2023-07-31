@@ -9,7 +9,7 @@
   <section class="content">
     <div class="container-fluid">
       <!-- Info boxes -->
-      <div class="row">
+      <div class="row" id="informacoesAluno">
         <div class="col-12 col-sm-6 col-md-3">
           <div class="info-box">
             <span class="info-box-icon bg-dark elevation-1"
@@ -73,11 +73,11 @@
       </div>
 
       <!-- /.row -->
-      <div class="alert alert-warning alert-dismissible">
+      <!-- <div class="alert alert-warning alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h5><i class="icon fas fa-exclamation-triangle"></i> Notificação!</h5>
         Caro aluno, esta é uma notificação do sistema AVA!
-      </div>
+      </div> -->
       {% if messages %} {% for message in messages%}
       <div
         {%
@@ -104,7 +104,7 @@
 </div>
 <!-- /.content-wrapper -->
 
-<input type="hidden" id="token" name="token" value="{{ csrf_token }}" />
-<input type="hidden" id="alunoId" name="alunoId" value="{{ aluno.id }}" />
-<input type="hidden" id="idCursoAtual" name="idCursoAtual" value="" />
+<input id="token" name="token" value="{{ csrf_token }}" style="display: none" />
+<input id="alunoId" name="alunoId" value="{{ aluno.id }}" style="display: none" />
+<input id="idCursoAtual" name="idCursoAtual" value="" style="display: none" />
 {% endblock content %}

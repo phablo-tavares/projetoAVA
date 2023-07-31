@@ -1,11 +1,15 @@
 <div class="card card-dark">
   <div class="card-header d-flex align-items-center justify-content-between">
-    <button type="button" class="btn btn-secondary btn-sm" onclick="exibirCardDosCursos()">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      onclick="voltarDaMateriaParaOCursoAtual('{{urlCursosMatriculados}}','{{csrf_token}}')"
+    >
       Voltar
     </button>
     <h3 class="card-title">Matérias - {{curso.nome}}</h3>
   </div>
-  <!-- /.card-header -->
+
   <div class="card-body">
     <div class="row">
       {% for materia in materiasDoCurso %}
@@ -14,7 +18,7 @@
           <button
             href=""
             class="btn btn-block bg-gradient-red"
-            onclick="exibirCardDosMateriaisDaMateria('/card-materiais-da-materia','{{csrf_token}}','{{materia.id}}')"
+            onclick="exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
           >
             <b> <i class="fas fa-book"></i> {{materia.nome}}</b>
           </button>
@@ -23,5 +27,4 @@
       {% endfor %}
     </div>
   </div>
-  <!-- /.card-body -->
 </div>

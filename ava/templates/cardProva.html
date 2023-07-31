@@ -1,0 +1,75 @@
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-secondary btn-sm"
+      onclick="ToggleInformacoesAluno() ; exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+    <button class="btn btn-secondary btn-sm">Finalizar Prova</button>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <form action="" method="post">
+        {% for questao in questoes %}
+        <div class="row">
+          <div class="col bg-light card">
+            <div>{{questao.enunciado}}</div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativasQuestao{{questao.id}}"
+                id="alternativa1Questao{{questao.id}}"
+                value="1"
+              />
+              <label class="form-check-label" for="alternativa1Questao{{questao.id}}"
+                >{{questao.alternativa1}}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativasQuestao{{questao.id}}"
+                id="alternativa2Questao{{questao.id}}"
+                value="2"
+              />
+              <label class="form-check-label" for="alternativa2Questao{{questao.id}}"
+                >{{questao.alternativa2}}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativasQuestao{{questao.id}}"
+                id="alternativa3Questao{{questao.id}}"
+                value="3"
+              />
+              <label class="form-check-label" for="alternativa3Questao{{questao.id}}"
+                >{{questao.alternativa3}}</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativasQuestao{{questao.id}}"
+                id="alternativa4Questao{{questao.id}}"
+                value="4"
+              />
+              <label class="form-check-label" for="alternativa4Questao{{questao.id}}"
+                >{{questao.alternativa4}}</label
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>

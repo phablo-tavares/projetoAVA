@@ -3,25 +3,29 @@
     <button
       type="button"
       class="btn btn-secondary btn-sm"
-      onclick="ExibirCardDasMateriasDoCurso('/card-materias-do-curso','{{csrf_token}}')"
+      onclick="voltarDoMaterialParaAMateriaAtual('{{urlMateriasDoCurso}}','{{csrf_token}}')"
     >
       Voltar
     </button>
     <h3 class="card-title">Materiais - {{materia.nome}}</h3>
   </div>
-  <!-- /.card-header -->
+
   <div class="card-body">
-    {% if perms.ava.podeFazerProvas %}
+    {% if perms.ava.podeFazerProvas %} {% if prova == None %} Prova Não Cadastrada no sistema
+    {%else%}
     <div class="row">
-      <div class="col-12 col-sm-6 col-md-3">
+      <div class="col-12 col-sm-6 col-md-auto">
         <div class="card-body">
-          <button href="" class="btn btn-block bg-gradient-red">
+          <button
+            class="btn btn-block bg-gradient-red"
+            onclick="ToggleInformacoesAluno() ; ExibirCardDaProva('{{urlProvas}}','{{csrf_token}}','{{prova.id}}')"
+          >
             <i class="bi bi-pencil-square"></i>Fazer a prova: {{prova.nome}}
           </button>
         </div>
       </div>
     </div>
-    {% endif %}
+    {% endif %} {% endif %}
 
     <div class="border-top border-dark">Anexos da Matéria:</div>
     <div class="row">
@@ -36,5 +40,4 @@
       {% endfor %}
     </div>
   </div>
-  <!-- /.card-body -->
 </div>
