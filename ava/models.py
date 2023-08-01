@@ -119,12 +119,12 @@ class Questao(models.Model):
 
 class ProvaRealizadaPeloAluno(models.Model):
     id = models.AutoField(primary_key=True)
-    prova = models.ForeignKey(Prova)
-    aluno = models.ForeignKey(Aluno)
+    prova = models.ForeignKey(Prova,on_delete=models.DO_NOTHING)
+    aluno = models.ForeignKey(Aluno,on_delete=models.DO_NOTHING)
     finalizouAProva = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'prova de ${self.prova.nome} realizada pelo aluno ${self.aluno.nome}'
+        return f'prova {self.prova.nome} realizada pelo aluno {self.aluno.nome}'
     
     class Meta:
         db_table = 'provas realizadas pelos alunos'
@@ -132,12 +132,13 @@ class ProvaRealizadaPeloAluno(models.Model):
 
 class QuestaoDaProvaRealizadaPeloAluno(models.Model):
     id = models.AutoField(primary_key=True)
-    provaRealizada = models.ForeignKey(ProvaRealizadaPeloAluno)
+    provaRealizada = models.ForeignKey(ProvaRealizadaPeloAluno,on_delete=models.CASCADE)
+    questaoCorrespondente = models.ForeignKey(Questao,on_delete=models.DO_NOTHING)
     alternativaEscolhida = models.IntegerField()
     acertouAQuestao = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'questão d prova de ${self.prova.nome} realizada pelo aluno ${self.aluno.nome}'
+        return str(self.id)
     
     class Meta:
         db_table = 'questões das provas realizadas pelos alunos'

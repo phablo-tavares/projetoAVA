@@ -53,3 +53,27 @@ function voltarDoMaterialParaAMateriaAtual(url, token) {
   let idDoCurso = $("#idCursoAtual").val();
   ExibirCardDasMateriasDoCurso(url, token, idDoCurso);
 }
+
+function serializeProvaForm() {
+  let serializedProva = $("#prova").serialize();
+  console.log(serializedProva);
+}
+
+//prettier-ignore
+function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
+  let url = "/enviar-prova";
+  let idDoAluno = $("#alunoId").val();
+  let provaSerializada = $("#prova").serialize();
+
+  $.ajax({
+    url: url,
+    type: "post",
+    data: { 
+      'idDoAluno': idDoAluno,
+      'idDaProva': idDaProva,
+      'provaSerializada': provaSerializada,
+      'finalizouAProva': finalizouAProva,
+     },
+    headers: { "X-CSRFToken": token },
+  });
+}

@@ -2,17 +2,22 @@
   <div class="card-header d-flex align-items-center justify-content-between">
     <button
       class="btn btn-secondary btn-sm"
-      onclick="ToggleInformacoesAluno() ; exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
+      onclick="salvarProvaRealizada('{{prova.id}}','{{csrf_token}}','false') ; ToggleInformacoesAluno() ; exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
     >
       Voltar
     </button>
     <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
-    <button class="btn btn-secondary btn-sm">Finalizar Prova</button>
+    <button
+      class="btn btn-secondary btn-sm"
+      onclick="salvarProvaRealizada('{{prova.id}}','{{csrf_token}}','true') "
+    >
+      Finalizar Prova
+    </button>
   </div>
 
   <div class="card-body">
     <div class="container">
-      <form action="" method="post">
+      <form action="" method="post" id="prova">
         {% for questao in questoes %}
         <div class="row">
           <div class="col bg-light card">
@@ -22,7 +27,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="alternativasQuestao{{questao.id}}"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
                 id="alternativa1Questao{{questao.id}}"
                 value="1"
               />
@@ -34,7 +39,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="alternativasQuestao{{questao.id}}"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
                 id="alternativa2Questao{{questao.id}}"
                 value="2"
               />
@@ -46,7 +51,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="alternativasQuestao{{questao.id}}"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
                 id="alternativa3Questao{{questao.id}}"
                 value="3"
               />
@@ -58,7 +63,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="alternativasQuestao{{questao.id}}"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
                 id="alternativa4Questao{{questao.id}}"
                 value="4"
               />
