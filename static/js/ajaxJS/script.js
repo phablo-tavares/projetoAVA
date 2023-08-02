@@ -54,11 +54,6 @@ function voltarDoMaterialParaAMateriaAtual(url, token) {
   ExibirCardDasMateriasDoCurso(url, token, idDoCurso);
 }
 
-function serializeProvaForm() {
-  let serializedProva = $("#prova").serialize();
-  console.log(serializedProva);
-}
-
 //prettier-ignore
 function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
   let url = "/enviar-prova";

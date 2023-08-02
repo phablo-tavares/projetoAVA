@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova,Questao,ProvaRealizadaPeloAluno,QuestaoDaProvaRealizadaPeloAluno
+from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno
 from myProject.util import CursosEmQueOAlunoEstaMatriculado
 from django.core.files.storage import FileSystemStorage
 
@@ -29,7 +29,7 @@ def CardCursosMatriculados(request):
     aluno = Aluno.objects.get(id=idDoAluno)
     cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
     urlMateriasDoCurso = "/card-materias-do-curso"
-    return render(request, 'cardCursosMatriculados.html', {'aluno':aluno,'cursosMatriculados': cursosMatriculados,'urlMateriasDoCurso':urlMateriasDoCurso})
+    return render(request, 'cardCursosMatriculados.html', {'aluno': aluno, 'cursosMatriculados': cursosMatriculados, 'urlMateriasDoCurso': urlMateriasDoCurso})
 
 
 def CardMateriasDoCurso(request):
@@ -43,11 +43,11 @@ def CardMateriasDoCurso(request):
     for idMateria in idDasMateriasDoCurso:
         materiasDoCurso.append(
             Materia.objects.get(id=idMateria['materia_id']))
-        
+
     urlMateriaisDaMateria = "/card-materiais-da-materia"
     urlCursosMatriculados = "/card-cursos-matriculados"
 
-    return render(request, 'cardMateriasDoCurso.html', {'curso': curso, 'materiasDoCurso': materiasDoCurso,'urlMateriaisDaMateria':urlMateriaisDaMateria,'urlCursosMatriculados':urlCursosMatriculados})
+    return render(request, 'cardMateriasDoCurso.html', {'curso': curso, 'materiasDoCurso': materiasDoCurso, 'urlMateriaisDaMateria': urlMateriaisDaMateria, 'urlCursosMatriculados': urlCursosMatriculados})
 
 
 def CardMateriaisDaMateria(request):
@@ -62,13 +62,14 @@ def CardMateriaisDaMateria(request):
     urlProvas = "/card-prova"
 
     aluno = Aluno.objects.get(user=request.user)
-    alunoJaFinalizouAProva = False
-    if ProvaRealizadaPeloAluno.objects.filter(aluno_id=aluno.id , prova_id=prova.id).exists():
-        provaRealizadaPeloAluno = ProvaRealizadaPeloAluno.objects.get(aluno_id = aluno.id, prova_id=prova.id)
+    try:
+        provaRealizadaPeloAluno = ProvaRealizadaPeloAluno.objects.get(
+            aluno_id=aluno.id, prova_id=prova.id)
         alunoJaFinalizouAProva = provaRealizadaPeloAluno.finalizouAProva
-            
+    except:
+        alunoJaFinalizouAProva = False
 
-    return render(request, 'cardMateriaisDaMateria.html', {'materia': materia, 'materiais': materiais, 'prova': prova,'urlMateriasDoCurso':urlMateriasDoCurso,'urlProvas':urlProvas,'alunoJaFinalizouAProva':alunoJaFinalizouAProva})
+    return render(request, 'cardMateriaisDaMateria.html', {'materia': materia, 'materiais': materiais, 'prova': prova, 'urlMateriasDoCurso': urlMateriasDoCurso, 'urlProvas': urlProvas, 'alunoJaFinalizouAProva': alunoJaFinalizouAProva})
 
 
 def CardProva(request):
@@ -77,21 +78,40 @@ def CardProva(request):
     questoes = Questao.objects.filter(prova=prova)
 
     materia = Materia.objects.get(id=prova.materia.id)
-    
+
     urlMateriaisDaMateria = "/card-materiais-da-materia"
 
-    #finaliar a logica abaixo amanhã
     aluno = Aluno.objects.get(user=request.user)
     try:
-        provaRealizadaPeloAluno = ProvaRealizadaPeloAluno.objects.get(aluno_id = aluno.id, prova_id=prova.id)
+        provaRealizadaPeloAluno = ProvaRealizadaPeloAluno.objects.get(
+            aluno_id=aluno.id, prova_id=prova.id)
+        try:
+            questoesDaProvaRealizadaPeloAluno = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
+                provaRealizada=provaRealizadaPeloAluno)
+        except:
+            questoesDaProvaRealizadaPeloAluno = None
     except:
         provaRealizadaPeloAluno = None
+        questoesDaProvaRealizadaPeloAluno = None
 
+    if questoesDaProvaRealizadaPeloAluno is not None:
+        for questaoDaProvaRealizadaPeloAluno in questoesDaProvaRealizadaPeloAluno:
+            for questao in questoes:
+                if questaoDaProvaRealizadaPeloAluno.questaoCorrespondente == questao:
+                    if questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 1:
+                        questao.alternativa1foiSelecionada = True
+                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 2:
+                        questao.alternativa2foiSelecionada = True
+                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 3:
+                        questao.alternativa3foiSelecionada = True
+                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 4:
+                        questao.alternativa4foiSelecionada = True
 
-    return render(request,'cardProva.html',{'prova':prova,'questoes':questoes,'materia':materia,'urlMateriaisDaMateria':urlMateriaisDaMateria,'provaRealizadaPeloAluno':provaRealizadaPeloAluno})
+    return render(request, 'cardProva.html', {'prova': prova, 'questoes': questoes, 'materia': materia, 'urlMateriaisDaMateria': urlMateriaisDaMateria, 'provaRealizadaPeloAluno': provaRealizadaPeloAluno, 'questoesDaProvaRealizadaPeloAluno': questoesDaProvaRealizadaPeloAluno})
 
 
 def EnviarProva(request):
+    print(request.POST)
     idDoAluno = int(request.POST['idDoAluno'])
     aluno = Aluno.objects.get(id=idDoAluno)
 
@@ -99,14 +119,15 @@ def EnviarProva(request):
     prova = Prova.objects.get(id=idDaProva)
 
     provaSerializada = request.POST['provaSerializada']
-    
+
     if request.POST['finalizouAProva'] == 'true':
         finalizouAProva = True
     else:
         finalizouAProva = False
 
-    if ProvaRealizadaPeloAluno.objects.filter(aluno_id=idDoAluno , prova_id=idDaProva).exists():
-        ProvaRealizadaPeloAluno.objects.get(aluno = aluno).delete()
+    if ProvaRealizadaPeloAluno.objects.filter(aluno_id=idDoAluno, prova_id=idDaProva).exists():
+        ProvaRealizadaPeloAluno.objects.get(
+            aluno=aluno, prova=prova).delete()
     provaRealizada = ProvaRealizadaPeloAluno()
     provaRealizada.aluno = aluno
     provaRealizada.prova = prova
@@ -114,10 +135,10 @@ def EnviarProva(request):
 
     provaRealizada.save()
 
-    k=0
+    k = 0
     alternativaEscolhidaEmCadaQuestao = []
-    for i in range(0,len(provaSerializada),31):
-        j=i+30
+    for i in range(0, len(provaSerializada), 31):
+        j = i+30
         alternativaEscolhidaEmCadaQuestao.append(provaSerializada[i:j])
 
         questaoRealizada = QuestaoDaProvaRealizadaPeloAluno()
@@ -127,15 +148,13 @@ def EnviarProva(request):
         questaoRealizada.alternativaEscolhida = alternativaEscolhida
 
         idQuestaoCorrespondente = int(alternativaEscolhidaEmCadaQuestao[k][-3])
-        questaoCorrespondente = Questao.objects.get(id = idQuestaoCorrespondente)
+        questaoCorrespondente = Questao.objects.get(id=idQuestaoCorrespondente)
         questaoRealizada.questaoCorrespondente = questaoCorrespondente
 
         if questaoRealizada.alternativaEscolhida == questaoCorrespondente.alternativaCorreta:
             questaoRealizada.acertouAQuestao = True
-        
+
         questaoRealizada.save()
-        k+=1
+        k += 1
 
     return redirect('/')
-
-
