@@ -57,18 +57,40 @@ function voltarDoMaterialParaAMateriaAtual(url, token) {
 //prettier-ignore
 function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
   let url = "/enviar-prova";
-  let idDoAluno = $("#alunoId").val();
-  let provaSerializada = $("#prova").serialize();
+  let provaSerializada = JSON.stringify($("#prova").serializeArray());
 
   $.ajax({
     url: url,
     type: "post",
-    data: { 
-      'idDoAluno': idDoAluno,
+    data: {
       'idDaProva': idDaProva,
       'provaSerializada': provaSerializada,
       'finalizouAProva': finalizouAProva,
-     },
+    },
+    dataType: "json",
     headers: { "X-CSRFToken": token },
+  });
+}
+
+function SwallfirefinalizarProva(
+  idDaProva,
+  token,
+  finalizouAProva,
+  urlMateriaisDaMateria,
+  idDaMateria
+) {
+  Swal.fire({
+    title: "Tem certeza que deseja finalizar a prova? Uma vez finalizada não será possível",
+    showDenyButton: true,
+    confirmButtonText: "Finalizar",
+    denyButtonText: `Continuar Fazendo a prova`,
+  }).then(async (result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      await Swal.fire("Prova Enviada!", "", "success");
+      salvarProvaRealizada(idDaProva, token, finalizouAProva);
+      ToggleInformacoesAluno();
+      exibirCardDosMateriaisDaMateria(urlMateriaisDaMateria, token, idDaMateria);
+    }
   });
 }

@@ -11,8 +11,8 @@
   </div>
 
   <div class="card-body">
-    {% if perms.ava.podeFazerProvas %} {% if prova == None %} Prova Não Cadastrada no sistema
-    {%else%}
+    {% if perms.ava.podeFazerProvas %} {% if prova == None or not existeQuestaoCadastradaNaProva %}
+    Prova Não Cadastrada no sistema {%else%}
     <div class="row">
       <div class="col-12 col-sm-6 col-md-auto">
         <div class="card-body">

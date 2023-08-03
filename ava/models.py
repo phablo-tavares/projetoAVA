@@ -50,7 +50,7 @@ class MateriaDoCurso(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return f'cadastro da materia {self.materia.nome} no curso {self.curso.nome}'
 
     class Meta:
         db_table = 'Matérias dos cursos'
@@ -62,12 +62,10 @@ class Matricula(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return f'matricula do aluno {self.aluno.nome} no curso {self.curso.nome}'
 
     class Meta:
         db_table = 'matriculas'
-
-
 
 
 class Material(models.Model):
@@ -94,7 +92,7 @@ class Prova(models.Model):
     materia = models.OneToOneField(Materia, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nome
+        return f'nome da prova: {self.nome}. Materia: {self.materia.nome}'
 
     class Meta:
         db_table = 'provas'
@@ -111,7 +109,7 @@ class Questao(models.Model):
     prova = models.ForeignKey(Prova, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.enunciado
+        return f'questao de id {self.id} da prova: {self.prova.nome}'
 
     class Meta:
         db_table = 'questoes'
@@ -119,27 +117,28 @@ class Questao(models.Model):
 
 class ProvaRealizadaPeloAluno(models.Model):
     id = models.AutoField(primary_key=True)
-    prova = models.ForeignKey(Prova,on_delete=models.DO_NOTHING)
-    aluno = models.ForeignKey(Aluno,on_delete=models.DO_NOTHING)
+    prova = models.ForeignKey(Prova, on_delete=models.CASCADE)
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     finalizouAProva = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'prova {self.prova.nome} realizada pelo aluno {self.aluno.nome}'
-    
+        return f'prova: {self.prova.nome}, realizada pelo aluno: {self.aluno.nome}'
+
     class Meta:
         db_table = 'provas realizadas pelos alunos'
 
 
 class QuestaoDaProvaRealizadaPeloAluno(models.Model):
     id = models.AutoField(primary_key=True)
-    provaRealizada = models.ForeignKey(ProvaRealizadaPeloAluno,on_delete=models.CASCADE)
-    questaoCorrespondente = models.ForeignKey(Questao,on_delete=models.DO_NOTHING)
+    provaRealizada = models.ForeignKey(
+        ProvaRealizadaPeloAluno, on_delete=models.CASCADE)
+    questaoCorrespondente = models.ForeignKey(
+        Questao, on_delete=models.DO_NOTHING)
     alternativaEscolhida = models.IntegerField()
     acertouAQuestao = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.id)
-    
+        return f'resposta da questao de id {self.questaoCorrespondente.id}, na prova {self.provaRealizada.prova.nome}, do aluno {self.provaRealizada.aluno.nome}'
+
     class Meta:
         db_table = 'questões das provas realizadas pelos alunos'
-
