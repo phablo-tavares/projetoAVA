@@ -142,3 +142,17 @@ class QuestaoDaProvaRealizadaPeloAluno(models.Model):
 
     class Meta:
         db_table = 'questões das provas realizadas pelos alunos'
+
+
+class BoletimDeDesempenhoDoAluno(models.Model):
+    id = models.AutoField(primary_key=True)
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
+    nota = models.FloatField()
+    aprovado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'boletim de desempenho do aluno {self.aluno.nome} na matéria {self.materia.nome}'
+
+    class Meta:
+        db_table = 'boletins de desempenho dos alunos'

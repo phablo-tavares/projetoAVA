@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno
-from myProject.util import CursosEmQueOAlunoEstaMatriculado
+from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno
+from myProject.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada
 from django.core.files.storage import FileSystemStorage
 import json
+from django.db.models import Sum
 
 # Create your views here.
 
@@ -153,50 +154,50 @@ def EnviarProva(request):
         provaRealizada.finalizouAProva = finalizouAProva
         provaRealizada.save()
 
-    k = 0
     provaSerializada = json.loads(request.POST['provaSerializada'])
-    alternativaEscolhidaEmCadaQuestao = []
-    for i in range(0, len(provaSerializada), 31):
-        j = i+30
-        alternativaEscolhidaEmCadaQuestao.append(provaSerializada[i:j])
-
-        questaoRealizada = QuestaoDaProvaRealizadaPeloAluno()
-        questaoRealizada.provaRealizada = provaRealizada
-
-        alternativaEscolhida = int(alternativaEscolhidaEmCadaQuestao[k][-1])
-        questaoRealizada.alternativaEscolhida = alternativaEscolhida
-
-        idQuestaoCorrespondente = int(alternativaEscolhidaEmCadaQuestao[k][-3])
-        questaoCorrespondente = Questao.objects.get(id=idQuestaoCorrespondente)
-        questaoRealizada.questaoCorrespondente = questaoCorrespondente
-
-        if questaoRealizada.alternativaEscolhida == questaoCorrespondente.alternativaCorreta:
-            questaoRealizada.acertouAQuestao = True
-
-        questaoRealizada.save()
-        k += 1
 
     if not QuestaoDaProvaRealizadaPeloAluno.objects.filter(provaRealizada=provaRealizada).exists():
         for respostaDeQuestao in provaSerializada:
-            questaoRealizada = QuestaoDaProvaRealizadaPeloAluno()
-            questaoRealizada.provaRealizada = provaRealizada
+            criarQuestaoRealizadaESalvarNaProvaRealizada(
+                respostaDeQuestao, provaRealizada)
 
-            alternativaEscolhida = int(respostaDeQuestao['value'])
-            questaoRealizada.alternativaEscolhida = alternativaEscolhida
+    else:
+        questoesRealizadas = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
+            provaRealizada=provaRealizada).all()
 
-            idQuestaoCorrespondente = respostaDeQuestao['name'][-1]
-            questaoCorrespondente = Questao.objects.get(id=idQuestaoCorrespondente)
-            questaoRealizada.questaoCorrespondente = questaoCorrespondente
-
-            if questaoRealizada.alternativaEscolhida == questaoCorrespondente.alternativaCorreta
-                questaoRealizada.acertouAQuestao == True
-
-            questaoRealizada.save()
-    
-    else: #finalizar essa lógica
         for respostaDeQuestao in provaSerializada:
-            for questaoRealizada in QuestaoDaProvaRealizadaPeloAluno.objects.get(provaRealizada=provaRealizada):
-                if questaoRealizada.que:
-                    pass
+            questaoJaRespondidaAnteriormente = False
+
+            for questaoRealizada in questoesRealizadas:
+                if questaoRealizada.questaoCorrespondente.id == int(respostaDeQuestao['name'][27:]):
+                    questaoJaRespondidaAnteriormente = True
+                    editarQuestaoRealizadaAnteriormente(
+                        respostaDeQuestao, questaoRealizada)
+
+            if questaoJaRespondidaAnteriormente == False:
+                criarQuestaoRealizadaESalvarNaProvaRealizada(
+                    respostaDeQuestao, provaRealizada)
+
+    if provaRealizada.finalizouAProva:
+        gerarBoletimDeDesempenho(
+            aluno=aluno, materia=prova.materia, prova=prova)
 
     return redirect('/')
+
+
+# finalizar essa parte
+def gerarBoletimDeDesempenho(aluno, materia, prova):
+    boletimDeDesempenhoDoAluno = BoletimDeDesempenhoDoAluno()
+
+    boletimDeDesempenhoDoAluno.aluno = aluno
+
+    boletimDeDesempenhoDoAluno.materia = materia
+
+    provaRealizadaDestamateria = ProvaRealizadaPeloAluno.objects.get(
+        prova=prova, aluno=aluno)
+    filtroQuestoesRealizadas = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
+        provaRealizada=provaRealizadaDestamateria)
+    quantidadeDeAcertosDoAluno = filtroQuestoesRealizadas.aggregate(
+        Sum('acertouAQuestao'))
+    quantidadeDeQuestoesNaProva = Questao.objects.filter(prova=prova).count()
+    notaFinal = float(quantidadeDeQuestoesNaProva/quantidadeDeAcertosDoAluno)

@@ -58,6 +58,7 @@ function voltarDoMaterialParaAMateriaAtual(url, token) {
 function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
   let url = "/enviar-prova";
   let provaSerializada = JSON.stringify($("#prova").serializeArray());
+  console.log(provaSerializada)
 
   $.ajax({
     url: url,
@@ -80,7 +81,7 @@ function SwallfirefinalizarProva(
   idDaMateria
 ) {
   Swal.fire({
-    title: "Tem certeza que deseja finalizar a prova? Uma vez finalizada não será possível",
+    title: "Tem certeza que deseja finalizar a prova? Operação Irreversivel",
     showDenyButton: true,
     confirmButtonText: "Finalizar",
     denyButtonText: `Continuar Fazendo a prova`,

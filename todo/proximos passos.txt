@@ -1,5 +1,7 @@
 funcionalidades para implementar
 
-acessar uma matéria
-visualizar os anexos
-botão para realizar a prova caso o usuário seja autorizado
+
+
+coisas pra refatorar
+
+mudar o nome da model de questoes da prova realizada pra respostas da prova realizada. semanticamente faz mais sentido

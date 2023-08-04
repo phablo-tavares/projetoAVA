@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Aluno, Curso, Materia, MateriaDoCurso, Matricula, Prova, Material,Questao,ProvaRealizadaPeloAluno,QuestaoDaProvaRealizadaPeloAluno
+from .models import Aluno, Curso, Materia, MateriaDoCurso, Matricula, Prova, Material, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno
 
 # Register your models here.
 admin.site.register(Aluno)
@@ -12,3 +12,4 @@ admin.site.register(Material)
 admin.site.register(Questao)
 admin.site.register(ProvaRealizadaPeloAluno)
 admin.site.register(QuestaoDaProvaRealizadaPeloAluno)
+admin.site.register(BoletimDeDesempenhoDoAluno)
