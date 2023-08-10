@@ -1,5 +1,5 @@
 
-from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso,Questao,QuestaoDaProvaRealizadaPeloAluno
+from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Questao, QuestaoDaProvaRealizadaPeloAluno
 
 
 def CursosEmQueOAlunoEstaMatriculado(aluno):
@@ -13,14 +13,27 @@ def CursosEmQueOAlunoEstaMatriculado(aluno):
 
     return cursosMatriculados
 
+
+def MateriasDeUmCurso(curso):
+    idDasMateriasDoCurso = MateriaDoCurso.objects.filter(curso=curso).prefetch_related(
+        'materia_id').values()
+
+    materiasDoCurso = []
+    for idMateria in idDasMateriasDoCurso:
+        materiasDoCurso.append(
+            Materia.objects.get(id=idMateria['materia_id']))
+
+    return materiasDoCurso
+
+
 def editarQuestaoRealizadaAnteriormente(respostaDeQuestao, questaoRealizada):
     alternativaEscolhida = int(respostaDeQuestao['value'])
     questaoRealizada.alternativaEscolhida = alternativaEscolhida
 
     if questaoRealizada.alternativaEscolhida == questaoRealizada.questaoCorrespondente.alternativaCorreta:
-        questaoRealizada.acertouAQuestao == True
+        questaoRealizada.acertouAQuestao = True
     else:
-        questaoRealizada.acertouAQuestao == False
+        questaoRealizada.acertouAQuestao = False
 
     questaoRealizada.save()
 
@@ -38,8 +51,8 @@ def criarQuestaoRealizadaESalvarNaProvaRealizada(respostaDeQuestao, provaRealiza
     questaoRealizada.questaoCorrespondente = questaoCorrespondente
 
     if questaoRealizada.alternativaEscolhida == questaoCorrespondente.alternativaCorreta:
-        questaoRealizada.acertouAQuestao == True
+        questaoRealizada.acertouAQuestao = True
     else:
-        questaoRealizada.acertouAQuestao == False
+        questaoRealizada.acertouAQuestao = False
 
     questaoRealizada.save()

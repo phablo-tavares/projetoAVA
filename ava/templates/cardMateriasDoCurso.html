@@ -9,7 +9,7 @@
     </button>
     <h3 class="card-title">Matérias - {{curso.nome}}</h3>
   </div>
-
+  {% if materiasDoCurso is not None %}
   <div class="card-body">
     <div class="row">
       {% for materia in materiasDoCurso %}
@@ -27,4 +27,7 @@
       {% endfor %}
     </div>
   </div>
+  {% else %}
+  <div class="card-body">Nenhuma matéria cadastrada no curso de {{curso.nome}}</div>
+  {% endif %}
 </div>

@@ -1,8 +1,7 @@
 $(document).ready(function () {
   let url = "/card-cursos-matriculados";
-  let idAluno = $("#alunoId").val();
   let token = $("#token").val();
-  exibirCardDosCursos(url, token, idAluno);
+  exibirCardDosCursos(url, token, "");
 });
 
 function ToggleInformacoesAluno() {
@@ -44,6 +43,22 @@ function ExibirCardDaProva(url, token, idProva) {
   inserirCardNaPaginaPricipal(url, token, idProva);
 }
 
+function exibirCardBoletimDeDesempenhoDoAluno(url, token) {
+  if ($("#informacoesAluno").css("display") === "none") ToggleInformacoesAluno();
+  $("#alertaPagamentoVencido").hide();
+  inserirCardNaPaginaPricipal(url, token, "");
+}
+function exibirCardFinanceiroDoAluno(url, token) {
+  if ($("#informacoesAluno").css("display") === "none") ToggleInformacoesAluno();
+  $("#alertaPagamentoVencido").hide();
+  inserirCardNaPaginaPricipal(url, token, "");
+}
+function exibirCardEditarDadosPessoaisDoDoAluno(url, token) {
+  if ($("#informacoesAluno").css("display") === "none") ToggleInformacoesAluno();
+  $("#alertaPagamentoVencido").hide();
+  inserirCardNaPaginaPricipal(url, token, "");
+}
+
 function voltarDaMateriaParaOCursoAtual(url, token) {
   let idDoAluno = $("#alunoId").val();
   exibirCardDosCursos(url, token, idDoAluno);
@@ -55,10 +70,9 @@ function voltarDoMaterialParaAMateriaAtual(url, token) {
 }
 
 //prettier-ignore
-function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
+async function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
   let url = "/enviar-prova";
   let provaSerializada = JSON.stringify($("#prova").serializeArray());
-  console.log(provaSerializada)
 
   $.ajax({
     url: url,
@@ -73,25 +87,41 @@ function salvarProvaRealizada(idDaProva, token, finalizouAProva) {
   });
 }
 
-function SwallfirefinalizarProva(
-  idDaProva,
-  token,
-  finalizouAProva,
-  urlMateriaisDaMateria,
-  idDaMateria
-) {
+//prettier-ignore
+function salvarEdicaoAluno(url, token) {
+  let dadosAlunoSerializado = JSON.stringify($("#dadosPessoaisDoAluno").serializeArray());
+
+  $.ajax({
+    url: url,
+    type: "post",
+    data: {
+      'dadosAlunoSerializado': dadosAlunoSerializado,
+    },
+    dataType: "json",
+    headers: { "X-CSRFToken": token },
+    success: function(data){
+      nomeAtualizado = JSON.parse(data)
+      $(".nomeAluno").html(nomeAtualizado)
+      console.log(data)
+      Swal.fire("Dados Editados com sucesso", "", "success");
+    }
+  });
+
+  
+}
+
+function SwallfirefinalizarProva(idDaProva, token, finalizouAProva, urlBoletimDeDesempenho) {
   Swal.fire({
     title: "Tem certeza que deseja finalizar a prova? Operação Irreversivel",
     showDenyButton: true,
     confirmButtonText: "Finalizar",
     denyButtonText: `Continuar Fazendo a prova`,
   }).then(async (result) => {
-    /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       await Swal.fire("Prova Enviada!", "", "success");
-      salvarProvaRealizada(idDaProva, token, finalizouAProva);
+      await salvarProvaRealizada(idDaProva, token, finalizouAProva);
       ToggleInformacoesAluno();
-      exibirCardDosMateriaisDaMateria(urlMateriaisDaMateria, token, idDaMateria);
+      exibirCardBoletimDeDesempenhoDoAluno(urlBoletimDeDesempenho, token);
     }
   });
 }

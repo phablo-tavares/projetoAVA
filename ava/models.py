@@ -1,6 +1,7 @@
 from django import forms
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
 # Create your models here.
 
@@ -135,7 +136,7 @@ class QuestaoDaProvaRealizadaPeloAluno(models.Model):
     questaoCorrespondente = models.ForeignKey(
         Questao, on_delete=models.DO_NOTHING)
     alternativaEscolhida = models.IntegerField()
-    acertouAQuestao = models.BooleanField(default=False)
+    acertouAQuestao = models.BooleanField()
 
     def __str__(self):
         return f'resposta da questao de id {self.questaoCorrespondente.id}, na prova {self.provaRealizada.prova.nome}, do aluno {self.provaRealizada.aluno.nome}'
@@ -148,11 +149,33 @@ class BoletimDeDesempenhoDoAluno(models.Model):
     id = models.AutoField(primary_key=True)
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
-    nota = models.FloatField()
-    aprovado = models.BooleanField(default=False)
+    provaRealizada = models.ForeignKey(
+        ProvaRealizadaPeloAluno, on_delete=models.CASCADE)
+    nota = models.DecimalField(decimal_places=2, max_digits=10)
+    aprovado = models.BooleanField()
 
     def __str__(self):
         return f'boletim de desempenho do aluno {self.aluno.nome} na matéria {self.materia.nome}'
 
     class Meta:
         db_table = 'boletins de desempenho dos alunos'
+
+
+class Parcela(models.Model):
+    id = models.AutoField(primary_key=True)
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    valorDaParcela = models.DecimalField(decimal_places=2, max_digits=10)
+    dataDeVencimento = models.DateField()
+    pagamentoRealizado = models.BooleanField()
+    boleto = models.FileField(upload_to='boletos')
+
+    def __str__(self):
+        return f'parcela do aluno {self.aluno.nome} referente ao curso {self.curso.nome}'
+
+    @property
+    def parcelaVencida(self):
+        return date.today() > self.dataDeVencimento
+
+    class Meta:
+        db_table = 'parcelas dos alunos'

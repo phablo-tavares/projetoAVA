@@ -1,0 +1,53 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <h3 class="card-title">Boletim de Desempenho - {{aluno.nome}}</h3>
+  </div>
+
+  {% if dadosBoletimDeDesempenho is None %}
+  <div class="card-body">Aluno não está matriculado em nenhum curso</div>
+  {% else %}
+  <div class="card-body">
+    <div id="accordion" class="accordion">
+      {% for curso in dadosBoletimDeDesempenho%}
+      <div class="card card-light">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            <a class="d-block w-100" data-toggle="collapse" href="#collapse{{curso.id}}">
+              {{curso.nome}}
+            </a>
+          </h4>
+        </div>
+        <div id="collapse{{curso.id}}" class="collapse" data-parent="#accordion">
+          <div class="card-body">
+            {% if curso.boletins is not None%}
+            <table id="example2" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Materia</th>
+                  <th>Nota Obtida</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for boletim in curso.boletins %}
+                <tr>
+                  <td>{{boletim.materia.nome}}</td>
+                  <td>{{boletim.nota}}</td>
+                  {% if boletim.aprovado %}
+                  <td><span class="badge badge-success">Aprovado</span></td>
+                  {% else %}
+                  <td><span class="badge badge-danger">Reprovado</span></td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %} Nenhum boletim gerado para este curso {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>

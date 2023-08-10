@@ -1,0 +1,95 @@
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <h3 class="card-title">Editar Dados Pessoais - {{aluno.nome}}</h3>
+    <button
+      class="btn btn-secondary btn-sm"
+      style="float: right"
+      onclick="salvarEdicaoAluno('{{urlSalvarEdicao}}','{{csrf_token}}');"
+    >
+      Salvar Edição
+    </button>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <form action="" method="post" id="dadosPessoaisDoAluno">
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nome">Nome</label>
+          <input
+            class="form-control col"
+            id="nome"
+            name="nome"
+            type="text"
+            value="{{aluno.nome}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="cpf">CPF</label>
+          <input
+            class="form-control col"
+            id="cpf"
+            name="cpf"
+            type="number"
+            maxlength="11"
+            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            minlength="11"
+            value="{{aluno.cpf}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="rg">RG</label>
+          <input
+            class="form-control col"
+            id="rg"
+            name="rg"
+            type="number"
+            maxlength="7"
+            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            minlength="7"
+            value="{{aluno.rg}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="email">Email</label>
+          <input
+            class="form-control col"
+            id="email"
+            name="email"
+            type="email"
+            value="{{aluno.email}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="endereco"
+            >Endereço</label
+          >
+          <input
+            class="form-control col"
+            id="endereco"
+            name="endereco"
+            type="text"
+            value="{{aluno.endereco}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="sexo">Sexo</label>
+          <select class="form-control col" name="sexo" id="sexo" required>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outro</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

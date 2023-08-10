@@ -16,6 +16,19 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css'%}" />
 
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"
+    />
+
     <!--ajax script-->
   </head>
   <body class="hold-transition sidebar-mini">
@@ -78,14 +91,14 @@
               {% endif %}
             </div>
             <div class="info">
-              <a href="#" class="d-block">{{aluno.nome}}</a>
+              <a href="#" class="d-block nomeAluno">{{aluno.nome}}</a>
             </div>
           </div>
 
           <!-- Sidebar Menu -->
           <nav class="mt-2">
             <ul
-              class="nav nav-pills nav-sidebar flex-column"
+              class="nav nav-treeview nav-pills nav-sidebar flex-column"
               data-widget="treeview"
               role="menu"
               data-accordion="false"
@@ -94,21 +107,33 @@
             
                with font-awesome or any other icon font library -->
               <li class="nav-item">
-                <a href="/ava" class="nav-link">
-                  <i class="nav-icon fa fa-font"></i>
+                <a
+                  class="nav-link d-flex justify-content-start"
+                  onclick="exibirCardDosCursos('{{urlCursosMatriculados}}','{{csrf_token}}','{{aluno.id}}')"
+                >
+                  <i class="nav-icon fa fa-list"></i>
                   <p>AVA</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a
+                  id="boletimDeDesempenho"
+                  class="nav-link"
+                  onclick="exibirCardBoletimDeDesempenhoDoAluno('{{urlBoletimDeDesempenho}}','{{csrf_token}}')"
+                >
                   <i class="nav-icon fa fa-list"></i>
                   <p>Boletim de Desempenho</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a
+                  id="financeiro"
+                  href="#"
+                  class="nav-link"
+                  onclick="exibirCardFinanceiroDoAluno('{{urlFinanceiro}}','{{csrf_token}}')"
+                >
                   <i class="nav-icon fa fa-clipboard"></i>
                   <p>Financeiro</p>
                 </a>
@@ -124,14 +149,18 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a
+                      href="#"
+                      class="nav-link"
+                      onclick="exibirCardEditarDadosPessoaisDoDoAluno('{{urlEditarDadosPessoaisDoAluno}}','{{csrf_token}}')"
+                    >
                       <i class="far fa-circle nav-icon"></i>
                       <p>Editar Dados</p>
                     </a>
                   </li>
 
                   <li class="nav-item">
-                    <a href="../../index.html" class="nav-link">
+                    <a href="{% url 'Logout' %}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>Logout</p>
                     </a>
@@ -180,5 +209,44 @@
     "
       rel="stylesheet"
     />
+
+    <!-- DataTables  & Plugins -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+    <script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+    <script>
+      $(function () {
+        $("#example1")
+          .DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+          })
+          .buttons()
+          .container()
+          .appendTo("#example1_wrapper .col-md-6:eq(0)");
+        $("#example2").DataTable({
+          paging: true,
+          lengthChange: false,
+          searching: false,
+          ordering: true,
+          info: true,
+          autoWidth: false,
+          responsive: true,
+        });
+      });
+    </script>
+    <script></script>
   </body>
 </html>

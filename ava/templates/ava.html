@@ -10,7 +10,7 @@
     <div class="container-fluid">
       <!-- Info boxes -->
       <div class="row" id="informacoesAluno">
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <div class="info-box">
             <span class="info-box-icon bg-dark elevation-1"
               ><i class="fas fa-user-graduate"></i
@@ -20,14 +20,14 @@
               <span class="info-box-text"
                 >{% if aluno.sexo == "M" %}Aluno {% else %}Aluna{% endif %}</span
               >
-              <span class="info-box-number">{{aluno.nome}}</span>
+              <span class="info-box-number nomeAluno">{{aluno.nome}}</span>
             </div>
             <!-- /.info-box-content -->
           </div>
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <div class="info-box mb-3">
             <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-thumbs-up"></i></span>
 
@@ -44,7 +44,7 @@
         <!-- fix for small devices only -->
         <div class="clearfix hidden-md-up"></div>
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-4">
           <div class="info-box mb-3">
             <span class="info-box-icon bg-dark elevation-1"><i class="fa fa-book"></i></span>
 
@@ -57,27 +57,22 @@
           <!-- /.info-box -->
         </div>
         <!-- /.col -->
-        <div class="col-12 col-sm-6 col-md-3">
-          <div class="info-box mb-3">
-            <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-money-bill"></i></span>
-
-            <div class="info-box-content">
-              <span class="info-box-text">Pagamento</span>
-              <span class="info-box-number">Pago</span>
-            </div>
-            <!-- /.info-box-content -->
+        {% if aluno.possuiParcelaVencida %}
+        <div class="col-12" id="alertaPagamentoVencido">
+          <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Pagamento</h5>
+            Caro aluno, você possui pagamentos em aberto! consulte a aba financeiro ao lado para
+            saber mais.
           </div>
           <!-- /.info-box -->
         </div>
+        {% endif %}
         <!-- /.col -->
       </div>
 
       <!-- /.row -->
-      <!-- <div class="alert alert-warning alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h5><i class="icon fas fa-exclamation-triangle"></i> Notificação!</h5>
-        Caro aluno, esta é uma notificação do sistema AVA!
-      </div> -->
+
       {% if messages %} {% for message in messages%}
       <div
         {%
@@ -105,6 +100,6 @@
 <!-- /.content-wrapper -->
 
 <input id="token" name="token" value="{{ csrf_token }}" style="display: none" />
-<input id="alunoId" name="alunoId" value="{{ aluno.id }}" style="display: none" />
 <input id="idCursoAtual" name="idCursoAtual" value="" style="display: none" />
+
 {% endblock content %}

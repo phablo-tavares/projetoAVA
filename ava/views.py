@@ -1,35 +1,51 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno
-from myProject.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada
+from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno, Parcela
+from myProject.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada, MateriasDeUmCurso
 from django.core.files.storage import FileSystemStorage
 import json
 from django.db.models import Sum
+from datetime import date
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.http import JsonResponse
 
 # Create your views here.
 
 
+class CustomEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o.__dict__
+
+
+@login_required(login_url="/")
 def Dashboard(request):
     # OBTEM O USUÁRIO DA INSTANCIA
     userAuth = request.user
 
-    # BUSCA O ID DO USUÁRIO DA INSTANCIA
-    # idAuthUser = User.objects.filter(username=userAuth).values()
-    # idAuthUser = idAuthUser[0]['id']
-
     # BUSCA INFORMAÇÕES DO USUÁRIO
     aluno = Aluno.objects.get(user=userAuth)
 
+    data_atual = timezone.now().date()
+    if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
+        aluno.possuiParcelaVencida = True
+
     context = {
         'aluno': aluno,
+        'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
+        'urlCursosMatriculados': "/card-cursos-matriculados",
+        'urlFinanceiro': "/card-financeiro",
+        'urlEditarDadosPessoaisDoAluno': "/card-editar-dados-pessoais",
     }
     return render(request, 'ava.html', context)
 
 
+@login_required(login_url="/")
 def CardCursosMatriculados(request):
-    idDoAluno = request.GET['id']
     aluno = Aluno.objects.get(user=request.user)
     cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
+    if cursosMatriculados == []:
+        cursosMatriculados = None
     urlMateriasDoCurso = "/card-materias-do-curso"
 
     context = {'aluno': aluno, 'cursosMatriculados': cursosMatriculados,
@@ -37,17 +53,13 @@ def CardCursosMatriculados(request):
     return render(request, 'cardCursosMatriculados.html', context)
 
 
+@login_required(login_url="/")
 def CardMateriasDoCurso(request):
     idCurso = request.GET['id']
     curso = Curso.objects.get(id=idCurso)
-
-    idDasMateriasDoCurso = MateriaDoCurso.objects.filter(curso=curso).prefetch_related(
-        'materia_id').values()
-
-    materiasDoCurso = []
-    for idMateria in idDasMateriasDoCurso:
-        materiasDoCurso.append(
-            Materia.objects.get(id=idMateria['materia_id']))
+    materiasDoCurso = MateriasDeUmCurso(curso)
+    if materiasDoCurso == []:
+        materiasDoCurso = None
 
     urlMateriaisDaMateria = "/card-materiais-da-materia"
     urlCursosMatriculados = "/card-cursos-matriculados"
@@ -57,6 +69,7 @@ def CardMateriasDoCurso(request):
     return render(request, 'cardMateriasDoCurso.html', context)
 
 
+@login_required(login_url="/")
 def CardMateriaisDaMateria(request):
     idDaMateria = request.GET['id']
     materia = Materia.objects.get(id=idDaMateria)
@@ -88,6 +101,7 @@ def CardMateriaisDaMateria(request):
     return render(request, 'cardMateriaisDaMateria.html', context)
 
 
+@login_required(login_url="/")
 def CardProva(request):
     idDaProva = request.GET['id']
     prova = Prova.objects.get(id=idDaProva)
@@ -96,6 +110,7 @@ def CardProva(request):
     materia = Materia.objects.get(id=prova.materia.id)
 
     urlMateriaisDaMateria = "/card-materiais-da-materia"
+    urlBoletimDeDesempenho = "/card-boletim-de-desempenho"
 
     aluno = Aluno.objects.get(user=request.user)
     try:
@@ -123,11 +138,110 @@ def CardProva(request):
                     elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 4:
                         questao.alternativa4foiSelecionada = True
 
-    context = {'prova': prova, 'questoes': questoes, 'materia': materia, 'urlMateriaisDaMateria': urlMateriaisDaMateria,
-               'provaRealizadaPeloAluno': provaRealizadaPeloAluno, 'questoesDaProvaRealizadaPeloAluno': questoesDaProvaRealizadaPeloAluno}
+    context = {'prova': prova,
+               'questoes': questoes,
+               'materia': materia,
+               'urlMateriaisDaMateria': urlMateriaisDaMateria,
+               'urlBoletimDeDesempenho': urlBoletimDeDesempenho,
+               'provaRealizadaPeloAluno': provaRealizadaPeloAluno,
+               'questoesDaProvaRealizadaPeloAluno': questoesDaProvaRealizadaPeloAluno
+               }
     return render(request, 'cardProva.html', context)
 
 
+@login_required(login_url="/")
+def CardBoletimDeDesempenho(request):
+    aluno = Aluno.objects.get(user=request.user)
+
+    cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
+
+    dadosBoletimDeDesempenho = []
+    if cursosMatriculados == []:
+        dadosBoletimDeDesempenho = None
+    else:
+        for curso in cursosMatriculados:
+            curso.boletins = []
+            materiasDoCurso = MateriasDeUmCurso(curso)
+            if materiasDoCurso == []:
+                curso.boletins = None
+            else:
+                for materia in materiasDoCurso:
+                    boletinsDoAlunoNestaMateria = BoletimDeDesempenhoDoAluno.objects.filter(
+                        aluno=aluno, materia=materia).all()
+                    curso.boletins.extend(boletinsDoAlunoNestaMateria)
+                if curso.boletins == []:
+                    curso.boletins = None
+            dadosBoletimDeDesempenho.append(curso)
+
+    context = {
+        'dadosBoletimDeDesempenho': dadosBoletimDeDesempenho,
+        'aluno': aluno
+    }
+
+    return render(request, 'boletimDeDesempenhoDoAluno.html', context)
+
+
+@login_required(login_url="/")
+def CardFinanceiro(request):
+    aluno = Aluno.objects.get(user=request.user)
+    cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
+
+    dadosFinanceirosDoAluno = []
+    if cursosMatriculados == []:
+        dadosFinanceirosDoAluno = None
+    else:
+        for curso in cursosMatriculados:
+            curso.parcelas = []
+            parcelasDoAlunoNesteCurso = Parcela.objects.filter(
+                aluno=aluno, curso=curso).all()
+            curso.parcelas.extend(parcelasDoAlunoNesteCurso)
+            if curso.parcelas == []:
+                curso.parcelas = None
+            dadosFinanceirosDoAluno.append(curso)
+
+    context = {
+        'aluno': aluno,
+        'dadosFinanceirosDoAluno': dadosFinanceirosDoAluno,
+    }
+    return render(request, 'financeiroDoAluno.html', context)
+
+
+@login_required(login_url="/")
+def CardEditarDadosPessoais(request):
+    aluno = Aluno.objects.get(user=request.user)
+
+    context = {
+        'aluno': aluno,
+        'urlSalvarEdicao': '/salvar-dados-pessoais-aluno'
+    }
+    return render(request, 'cardEditarDadosPessoais.html', context)
+
+
+@login_required(login_url="/")
+def SalvarDadosPessoaisAluno(request):
+    aluno = Aluno.objects.get(user=request.user)
+    dadosAlunoSerializado = json.loads(request.POST['dadosAlunoSerializado'])
+
+    for dado in dadosAlunoSerializado:
+        if dado['name'] == 'nome':
+            aluno.nome = dado['value']
+        elif dado['name'] == 'cpf':
+            aluno.cpf = int(dado['value'])
+        elif dado['name'] == 'rg':
+            aluno.rg = int(dado['value'])
+        elif dado['name'] == 'email':
+            aluno.email = dado['value']
+        elif dado['name'] == 'endereco':
+            aluno.endereco = dado['value']
+        elif dado['name'] == 'sexo':
+            aluno.sexo = dado['value']
+
+    aluno.save()
+
+    return JsonResponse(json.dumps(aluno.nome, indent=4, cls=CustomEncoder), safe=False)
+
+
+@login_required(login_url="/")
 def EnviarProva(request):
     aluno = Aluno.objects.get(user=request.user)
 
@@ -139,20 +253,16 @@ def EnviarProva(request):
     else:
         finalizouAProva = False
 
-    if ProvaRealizadaPeloAluno.objects.filter(
-            aluno_id=aluno.id, prova_id=idDaProva).exists():
-        provaRealizada = ProvaRealizadaPeloAluno.objects.get(
-            aluno=aluno, prova=prova)
-        provaRealizada.aluno = aluno
-        provaRealizada.prova = prova
-        provaRealizada.finalizouAProva = finalizouAProva
-        provaRealizada.save()
+    aux = ProvaRealizadaPeloAluno.objects
+    if aux.filter(aluno_id=aluno.id, prova_id=idDaProva).exists():
+        provaRealizada = aux.get(aluno=aluno, prova=prova)
     else:
         provaRealizada = ProvaRealizadaPeloAluno()
-        provaRealizada.aluno = aluno
-        provaRealizada.prova = prova
-        provaRealizada.finalizouAProva = finalizouAProva
-        provaRealizada.save()
+
+    provaRealizada.aluno = aluno
+    provaRealizada.prova = prova
+    provaRealizada.finalizouAProva = finalizouAProva
+    provaRealizada.save()
 
     provaSerializada = json.loads(request.POST['provaSerializada'])
 
@@ -180,24 +290,35 @@ def EnviarProva(request):
 
     if provaRealizada.finalizouAProva:
         gerarBoletimDeDesempenho(
-            aluno=aluno, materia=prova.materia, prova=prova)
+            aluno=aluno, materia=prova.materia, prova=prova, provaRealizada=provaRealizada)
 
     return redirect('/')
 
 
-# finalizar essa parte
-def gerarBoletimDeDesempenho(aluno, materia, prova):
+def gerarBoletimDeDesempenho(aluno, materia, prova, provaRealizada):
     boletimDeDesempenhoDoAluno = BoletimDeDesempenhoDoAluno()
-
     boletimDeDesempenhoDoAluno.aluno = aluno
-
     boletimDeDesempenhoDoAluno.materia = materia
+    boletimDeDesempenhoDoAluno.provaRealizada = provaRealizada
 
     provaRealizadaDestamateria = ProvaRealizadaPeloAluno.objects.get(
         prova=prova, aluno=aluno)
-    filtroQuestoesRealizadas = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
-        provaRealizada=provaRealizadaDestamateria)
-    quantidadeDeAcertosDoAluno = filtroQuestoesRealizadas.aggregate(
-        Sum('acertouAQuestao'))
-    quantidadeDeQuestoesNaProva = Questao.objects.filter(prova=prova).count()
-    notaFinal = float(quantidadeDeQuestoesNaProva/quantidadeDeAcertosDoAluno)
+
+    quantidadeDeAcertosDoAluno = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
+        provaRealizada=provaRealizadaDestamateria, acertouAQuestao=True).count()
+
+    if quantidadeDeAcertosDoAluno != 0:
+        quantidadeDeQuestoesNaProva = Questao.objects.filter(
+            prova=prova).count()
+        notaFinal = float(quantidadeDeAcertosDoAluno /
+                          quantidadeDeQuestoesNaProva) * 10
+    else:
+        notaFinal = 0
+    boletimDeDesempenhoDoAluno.nota = notaFinal
+
+    if notaFinal >= 6:
+        boletimDeDesempenhoDoAluno.aprovado = True
+    else:
+        boletimDeDesempenhoDoAluno.aprovado = False
+
+    boletimDeDesempenhoDoAluno.save()

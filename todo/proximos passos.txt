@@ -5,3 +5,90 @@ funcionalidades para implementar
 coisas pra refatorar
 
 mudar o nome da model de questoes da prova realizada pra respostas da prova realizada. semanticamente faz mais sentido
+
+
+
+
+<div class="card card-dark">
+  <div class="card-header">
+    <h3 class="card-title">Boletim de Desempenho - {{aluno.nome}}</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <div class="row bg-dark">
+        <div class="col-5"><h5>Matéria</h5></div>
+        <div class="col-5"><h5>Nota Obtida</h5></div>
+        <div class="col-2"><h5>Status</h5></div>
+      </div>
+      {% for boletim in boletinsDoAluno %}
+      <div class="row">
+        <div class="col-5">
+          <div class="card-body bg-light">{{boletim.materia.nome}}</div>
+        </div>
+        <div class="col-5">
+          <div class="card-body bg-light">{{boletim.nota}}</div>
+        </div>
+        <div class="col-2">
+          {% if boletim.aprovado %}
+          <div class="card-body bg-success">Aprovado</div>
+          {% else %}
+          <div class="card-body bg-danger">Reprovado</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div id="accordion">
+  <div class="card card-dark">
+    <div class="card-header">
+      <h4 class="card-title w-100">
+        <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+          Collapsible Group Item #1
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="collapse show" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
+        squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa
+        nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
+        single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
+        beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
+        lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
+        probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+</div>
+
+<table id="example2" class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Rendering engine</th>
+      <th>Browser</th>
+      <th>Platform(s)</th>
+      <th>Engine version</th>
+      <th>CSS grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trident</td>
+      <td>Internet Explorer 4.0</td>
+      <td>Win 95+</td>
+      <td>4</td>
+      <td>X</td>
+    </tr>
+    <tr>
+      <td>Trident</td>
+      <td>Internet Explorer 5.0</td>
+      <td>Win 95+</td>
+      <td>5</td>
+      <td>C</td>
+    </tr>
+  </tbody>
+</table>
