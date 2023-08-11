@@ -82,9 +82,13 @@ class Material(models.Model):
         db_table = 'materiais'
 
 
-class PermissaoRealizarProva(models.Model):
+class Permissioes(models.Model):
     class Meta:
-        permissions = [("podeFazerProvas", "aluno pode realizar a prova")]
+        permissions = [
+            ("podeFazerProvas", "aluno pode realizar a prova"),
+            ("ehAdministrador", "usuário logado é administrador"),
+            ("ehAluno", "usuário logado é aluno"),
+        ]
 
 
 class Prova(models.Model):

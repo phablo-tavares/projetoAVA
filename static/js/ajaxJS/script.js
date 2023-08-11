@@ -102,7 +102,7 @@ function salvarEdicaoAluno(url, token) {
     success: function(data){
       nomeAtualizado = JSON.parse(data)
       $(".nomeAluno").html(nomeAtualizado)
-      console.log(data)
+      $("#cardHeaderEditarDados").html(`Editar Dados Pessoais - ${nomeAtualizado}`)
       Swal.fire("Dados Editados com sucesso", "", "success");
     }
   });

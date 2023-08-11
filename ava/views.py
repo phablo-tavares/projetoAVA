@@ -22,21 +22,34 @@ class CustomEncoder(json.JSONEncoder):
 def Dashboard(request):
     # OBTEM O USUÁRIO DA INSTANCIA
     userAuth = request.user
+    alunoLogado = False
+    administradorLogado = False
 
-    # BUSCA INFORMAÇÕES DO USUÁRIO
-    aluno = Aluno.objects.get(user=userAuth)
+    if userAuth.groups.filter(name='usuario_logado_eh_administrador').exists():
+        administradorLogado = True
+        context = {
+            'user': userAuth,
+            'administradorLogado': administradorLogado,
+        }
 
-    data_atual = timezone.now().date()
-    if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
-        aluno.possuiParcelaVencida = True
+    else:
+        # BUSCA INFORMAÇÕES DO USUÁRIO
+        aluno = Aluno.objects.get(user=userAuth)
+        alunoLogado = True
 
-    context = {
-        'aluno': aluno,
-        'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
-        'urlCursosMatriculados': "/card-cursos-matriculados",
-        'urlFinanceiro': "/card-financeiro",
-        'urlEditarDadosPessoaisDoAluno': "/card-editar-dados-pessoais",
-    }
+        data_atual = timezone.now().date()
+        if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
+            aluno.possuiParcelaVencida = True
+
+        context = {
+            'aluno': aluno,
+            'alunoLogado': alunoLogado,
+            'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
+            'urlCursosMatriculados': "/card-cursos-matriculados",
+            'urlFinanceiro': "/card-financeiro",
+            'urlEditarDadosPessoaisDoAluno': "/card-editar-dados-pessoais",
+        }
+
     return render(request, 'ava.html', context)
 
 
