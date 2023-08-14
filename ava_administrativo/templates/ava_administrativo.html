@@ -1,4 +1,4 @@
-{% extends "menu.html" %} {% block content %}{% load static %}
+{% extends "menu_administrativo.html" %} {% block content %}{% load static %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -18,10 +18,8 @@
             ></span>
 
             <div class="info-box-content">
-              <span class="info-box-text"
-                >{% if aluno.sexo == "M" %}Aluno{% else %}Aluna{% endif %}</span
-              >
-              <span class="info-box-number nomeAluno">{{aluno.nome}}</span>
+              <span class="info-box-text">User</span>
+              <span class="info-box-number nomeAluno">{{user.username}}</span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -57,18 +55,8 @@
           </div>
           <!-- /.info-box -->
         </div>
+
         <!-- /.col -->
-        {% if aluno.possuiParcelaVencida %}
-        <div class="col-12" id="alertaPagamentoVencido">
-          <div class="alert alert-warning alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h5><i class="icon fas fa-exclamation-triangle"></i> Pagamento</h5>
-            Caro aluno, você possui pagamentos em aberto! consulte a aba financeiro ao lado para
-            saber mais.
-          </div>
-          <!-- /.info-box -->
-        </div>
-        {% endif %}
         <!-- /.col -->
       </div>
 
@@ -92,15 +80,12 @@
       {% endfor %} {% endif %}
 
       <!-- /.row -->
-      <div id="card-container-pagina-principal"></div>
+      <div id="card-container-administrativo-pagina-principal"></div>
     </div>
     <!--/. container-fluid -->
   </section>
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
-<input id="token" name="token" value="{{ csrf_token }}" style="display: none" />
-<input id="idCursoAtual" name="idCursoAtual" value="" style="display: none" />
 
 {% endblock content %}

@@ -14,11 +14,6 @@ def login_page(request):
     return render(request, 'login.html')
 
 
-def Logout_user(request):
-    logout(request)
-    return redirect('/')
-
-
 @csrf_protect
 def Autenticar(request):
     # return render(request,"forms.html")
@@ -30,10 +25,16 @@ def Autenticar(request):
 
         if user is not None:
             login(request, user)
-            return redirect('/ava', {'user': user})
+
+            if user.groups.filter(name='usuario_logado_eh_administrador').exists():
+                return redirect('/ava_administrativo', {'user': user})
+            else:
+                return redirect('/ava', {'user': user})
         else:
             messages.error(request, ' Usuário/Senha inválidos!')
             return redirect('/')
 
 
-# pagina = render(request,'index.html',{"alunos":alunos, "escolas":escolas ,"matriculas":matriculas})
+def Logout_user(request):
+    logout(request)
+    return redirect('/')

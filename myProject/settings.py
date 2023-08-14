@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     'login',
     'ava',
-    'menu',
+    'ava_administrativo',
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno, Parcela
-from myProject.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada, MateriasDeUmCurso
+from ava.util.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada, MateriasDeUmCurso
 from django.core.files.storage import FileSystemStorage
 import json
 from django.db.models import Sum
@@ -22,33 +22,21 @@ class CustomEncoder(json.JSONEncoder):
 def Dashboard(request):
     # OBTEM O USUÁRIO DA INSTANCIA
     userAuth = request.user
-    alunoLogado = False
-    administradorLogado = False
 
-    if userAuth.groups.filter(name='usuario_logado_eh_administrador').exists():
-        administradorLogado = True
-        context = {
-            'user': userAuth,
-            'administradorLogado': administradorLogado,
-        }
+    # BUSCA INFORMAÇÕES DO USUÁRIO
+    aluno = Aluno.objects.get(user=userAuth)
 
-    else:
-        # BUSCA INFORMAÇÕES DO USUÁRIO
-        aluno = Aluno.objects.get(user=userAuth)
-        alunoLogado = True
+    data_atual = timezone.now().date()
+    if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
+        aluno.possuiParcelaVencida = True
 
-        data_atual = timezone.now().date()
-        if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
-            aluno.possuiParcelaVencida = True
-
-        context = {
-            'aluno': aluno,
-            'alunoLogado': alunoLogado,
-            'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
-            'urlCursosMatriculados': "/card-cursos-matriculados",
-            'urlFinanceiro': "/card-financeiro",
-            'urlEditarDadosPessoaisDoAluno': "/card-editar-dados-pessoais",
-        }
+    context = {
+        'aluno': aluno,
+        'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
+        'urlCursosMatriculados': "/card-cursos-matriculados",
+        'urlFinanceiro': "/card-financeiro",
+        'urlEditarDadosPessoaisDoAluno': "/card-editar-dados-pessoais",
+    }
 
     return render(request, 'ava.html', context)
 

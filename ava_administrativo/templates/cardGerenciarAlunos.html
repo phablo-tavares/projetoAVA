@@ -1,0 +1,44 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <h3 class="card-title">Gerenciar Alunos</h3>
+  </div>
+
+  <div class="card-body">
+    {% if alunos is not None%}
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Nome do Aluno(a)</th>
+          <th>Cpf</th>
+          <th style="width: 35%">Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for aluno in alunos %}
+        <tr>
+          <td>{{aluno.nome}}</td>
+          <td>{{aluno.cpf}}</td>
+          <td
+            class="d-flex justify-content-between border-top-0 border-left-0 border-right-0 {% if forloop.last %}border-bottom-0 {% endif %}"
+          >
+            <button
+              class="btn btn-sm btn-outline-success"
+              onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
+            >
+              Visualizar Aluno
+            </button>
+            <button class="btn btn-sm btn-outline-info">Editar Dados</button>
+            <button
+              class="btn btn-sm btn-outline-danger"
+              onclick="excluirAluno('{{urlExcluirAluno}}','{{csrf_token}}','{{aluno.id}}','{{urlCardGerenciarAlunos}}')"
+            >
+              Excluir Aluno
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %} Nenhum aluno cadastrado no sistema. {% endif %}
+  </div>
+</div>
