@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from ava.models import Aluno, Matricula, Curso, Materia, MateriaDoCurso, Material, Prova, Questao, ProvaRealizadaPeloAluno, QuestaoDaProvaRealizadaPeloAluno, BoletimDeDesempenhoDoAluno, Parcela
-from ava.util.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada, MateriasDeUmCurso
+from ava.util.util import CursosEmQueOAlunoEstaMatriculado, editarQuestaoRealizadaAnteriormente, criarQuestaoRealizadaESalvarNaProvaRealizada, MateriasDeUmCurso, gerarDadosBoletimDeDesempenhoDeUmAluno, gerarDadosFinanceirosDoAluno, dadosParaRenderizarAProvaRealizadaPeloAluno
 from django.core.files.storage import FileSystemStorage
 import json
 from django.db.models import Sum
@@ -107,45 +107,21 @@ def CardProva(request):
     idDaProva = request.GET['id']
     prova = Prova.objects.get(id=idDaProva)
     questoes = Questao.objects.filter(prova=prova)
+    aluno = Aluno.objects.get(user=request.user)
 
     materia = Materia.objects.get(id=prova.materia.id)
 
-    urlMateriaisDaMateria = "/card-materiais-da-materia"
-    urlBoletimDeDesempenho = "/card-boletim-de-desempenho"
-
-    aluno = Aluno.objects.get(user=request.user)
-    try:
-        provaRealizadaPeloAluno = ProvaRealizadaPeloAluno.objects.get(
-            aluno_id=aluno.id, prova_id=prova.id)
-        try:
-            questoesDaProvaRealizadaPeloAluno = QuestaoDaProvaRealizadaPeloAluno.objects.filter(
-                provaRealizada=provaRealizadaPeloAluno)
-        except:
-            questoesDaProvaRealizadaPeloAluno = None
-    except:
-        provaRealizadaPeloAluno = None
-        questoesDaProvaRealizadaPeloAluno = None
-
-    if questoesDaProvaRealizadaPeloAluno is not None:
-        for questaoDaProvaRealizadaPeloAluno in questoesDaProvaRealizadaPeloAluno:
-            for questao in questoes:
-                if questaoDaProvaRealizadaPeloAluno.questaoCorrespondente == questao:
-                    if questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 1:
-                        questao.alternativa1foiSelecionada = True
-                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 2:
-                        questao.alternativa2foiSelecionada = True
-                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 3:
-                        questao.alternativa3foiSelecionada = True
-                    elif questaoDaProvaRealizadaPeloAluno.alternativaEscolhida == 4:
-                        questao.alternativa4foiSelecionada = True
+    dados = dadosParaRenderizarAProvaRealizadaPeloAluno(prova, questoes, aluno)
+    provaRealizadaPeloAluno = dados['provaRealizadaPeloAluno']
+    questoesDaProvaRealizadaPeloAluno = dados['questoesDaProvaRealizadaPeloAluno']
 
     context = {'prova': prova,
                'questoes': questoes,
                'materia': materia,
-               'urlMateriaisDaMateria': urlMateriaisDaMateria,
-               'urlBoletimDeDesempenho': urlBoletimDeDesempenho,
                'provaRealizadaPeloAluno': provaRealizadaPeloAluno,
-               'questoesDaProvaRealizadaPeloAluno': questoesDaProvaRealizadaPeloAluno
+               'questoesDaProvaRealizadaPeloAluno': questoesDaProvaRealizadaPeloAluno,
+               'urlMateriaisDaMateria': "/card-materiais-da-materia",
+               'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",
                }
     return render(request, 'cardProva.html', context)
 
@@ -153,52 +129,19 @@ def CardProva(request):
 @login_required(login_url="/")
 def CardBoletimDeDesempenho(request):
     aluno = Aluno.objects.get(user=request.user)
-
-    cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
-
-    dadosBoletimDeDesempenho = []
-    if cursosMatriculados == []:
-        dadosBoletimDeDesempenho = None
-    else:
-        for curso in cursosMatriculados:
-            curso.boletins = []
-            materiasDoCurso = MateriasDeUmCurso(curso)
-            if materiasDoCurso == []:
-                curso.boletins = None
-            else:
-                for materia in materiasDoCurso:
-                    boletinsDoAlunoNestaMateria = BoletimDeDesempenhoDoAluno.objects.filter(
-                        aluno=aluno, materia=materia).all()
-                    curso.boletins.extend(boletinsDoAlunoNestaMateria)
-                if curso.boletins == []:
-                    curso.boletins = None
-            dadosBoletimDeDesempenho.append(curso)
+    dadosBoletimDeDesempenho = gerarDadosBoletimDeDesempenhoDeUmAluno(aluno)
 
     context = {
         'dadosBoletimDeDesempenho': dadosBoletimDeDesempenho,
         'aluno': aluno
     }
-
     return render(request, 'boletimDeDesempenhoDoAluno.html', context)
 
 
 @login_required(login_url="/")
 def CardFinanceiro(request):
     aluno = Aluno.objects.get(user=request.user)
-    cursosMatriculados = CursosEmQueOAlunoEstaMatriculado(aluno=aluno)
-
-    dadosFinanceirosDoAluno = []
-    if cursosMatriculados == []:
-        dadosFinanceirosDoAluno = None
-    else:
-        for curso in cursosMatriculados:
-            curso.parcelas = []
-            parcelasDoAlunoNesteCurso = Parcela.objects.filter(
-                aluno=aluno, curso=curso).all()
-            curso.parcelas.extend(parcelasDoAlunoNesteCurso)
-            if curso.parcelas == []:
-                curso.parcelas = None
-            dadosFinanceirosDoAluno.append(curso)
+    dadosFinanceirosDoAluno = gerarDadosFinanceirosDoAluno(aluno)
 
     context = {
         'aluno': aluno,

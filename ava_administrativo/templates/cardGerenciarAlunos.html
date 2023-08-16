@@ -10,7 +10,7 @@
         <tr>
           <th>Nome do Aluno(a)</th>
           <th>Cpf</th>
-          <th style="width: 35%">Ação</th>
+          <th style="width: 35%"></th>
         </tr>
       </thead>
       <tbody>
@@ -27,7 +27,12 @@
             >
               Visualizar Aluno
             </button>
-            <button class="btn btn-sm btn-outline-info">Editar Dados</button>
+            <button
+              class="btn btn-sm btn-outline-info"
+              onclick="exibirCardEditarDadosPessoaisDeUmAluno('{{urlCardEditarDadosPessoaisDeUmAluno}}','{{csrf_token}}','{{aluno.id}}')"
+            >
+              Editar Dados
+            </button>
             <button
               class="btn btn-sm btn-outline-danger"
               onclick="excluirAluno('{{urlExcluirAluno}}','{{csrf_token}}','{{aluno.id}}','{{urlCardGerenciarAlunos}}')"

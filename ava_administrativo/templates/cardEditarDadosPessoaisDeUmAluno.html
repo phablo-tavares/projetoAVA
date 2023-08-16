@@ -1,0 +1,135 @@
+<div class="card card-info">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-secondary btn-sm"
+      style="float: left"
+      onclick="exibirCardGerenciarAlunos('{{urlCardGerenciarAlunos}}', '{{csrf_token}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title" id="cardHeaderEditarDados">Editar Dados Pessoais - {{aluno.nome}}</h3>
+    <button
+      class="btn btn-secondary btn-sm"
+      style="float: right"
+      onclick="salvarEdicaoDeUmAluno('{{urlSalvarEdicaoEmUmAluno}}', '{{csrf_token}}','{{aluno.id}}')"
+    >
+      Salvar Edição
+    </button>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <form action="" method="post" id="dadosPessoaisDoAlunoAdministrativo">
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nome">Nome</label>
+          <input
+            class="form-control col"
+            id="nome"
+            name="nome"
+            type="text"
+            value="{{aluno.nome}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="cpf">CPF</label>
+          <input
+            class="form-control col"
+            id="cpf"
+            name="cpf"
+            type="number"
+            maxlength="11"
+            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            minlength="11"
+            value="{{aluno.cpf}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="rg">RG</label>
+          <input
+            class="form-control col"
+            id="rg"
+            name="rg"
+            type="number"
+            maxlength="7"
+            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            minlength="7"
+            value="{{aluno.rg}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="email">Email</label>
+          <input
+            class="form-control col"
+            id="email"
+            name="email"
+            type="email"
+            value="{{aluno.email}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="endereco"
+            >Endereço</label
+          >
+          <input
+            class="form-control col"
+            id="endereco"
+            name="endereco"
+            type="text"
+            value="{{aluno.endereco}}"
+            required
+          />
+        </div>
+
+        <div class="form-group row">
+          <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="sexo">Sexo</label>
+          <select class="form-control col" name="sexo" id="sexo" required>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outro</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if provasRealizadasOQualOAlunoReprovou is not None %}
+<div class="row" id="provasRealizadasOQualOAlunoReprovou">
+  <div id="accordionReprovacoes" class="accordion w-100">
+    <div class="card card-warning">
+      <div class="card-header">
+        <h4 class="card-title w-100">
+          <a class="d-block w-100" data-toggle="collapse" href="#collapseReprovacoes">
+            Provas o qual o aluno reprovou
+          </a>
+        </h4>
+      </div>
+
+      <div id="collapseReprovacoes" class="collapse" data-parent="#accordionReprovacoes">
+        <div class="card-body">
+          <div class="col-12 col-sm-6 col-md-auto" id="containerBotoesPermitirRefazerProva">
+            {% for provaRealizada in provasRealizadasOQualOAlunoReprovou %}
+            <button
+              class="btn bg-gradient-danger"
+              id="botaoPermitirQueOAlunoRefacaAProva{{provaRealizada.id}}"
+              onclick="permitirQueUmAlunoRefacaUmaProva('{{urlPermitirRefazerAProva}}','{{csrf_token}}','{{provaRealizada.id}}')"
+            >
+              {{provaRealizada.prova.nome}}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer">Clique em uma para autorizar que o aluno a refaça</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

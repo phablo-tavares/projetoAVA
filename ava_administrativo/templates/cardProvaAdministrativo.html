@@ -1,0 +1,103 @@
+{% if not provaRealizadaPeloAluno.finalizouAProva %}
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-secondary btn-sm"
+      onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+  </div>
+
+  <div class="card-body">Aluno ainda não finalizou esta prova!</div>
+</div>
+
+{%else%}
+<div class="card card-dark">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-secondary btn-sm"
+      onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="container">
+      <form action="" method="post" id="prova">
+        {% for questao in questoes %}
+        <div class="row">
+          <div class="col bg-light card">
+            <div>{{questao.enunciado}}</div>
+
+            <div class="form-check">
+              <!-- prettier-ignore -->
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
+                id="alternativa1Questao{{questao.id}}"
+                value="1"
+                {%if questao.alternativa1foiSelecionada%} checked {%endif%}
+                disabled
+              />
+              <label class="form-check-label" for="alternativa1Questao{{questao.id}}"
+                >{{questao.alternativa1}}</label
+              >
+            </div>
+            <div class="form-check">
+              <!-- prettier-ignore -->
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
+                id="alternativa2Questao{{questao.id}}"
+                value="2"
+                {%if questao.alternativa2foiSelecionada%} checked {%endif%}
+                disabled
+              />
+              <label class="form-check-label" for="alternativa2Questao{{questao.id}}"
+                >{{questao.alternativa2}}</label
+              >
+            </div>
+            <div class="form-check">
+              <!-- prettier-ignore -->
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
+                id="alternativa3Questao{{questao.id}}"
+                value="3"
+                {%if questao.alternativa3foiSelecionada%} checked {%endif%}
+                disabled
+              />
+              <label class="form-check-label" for="alternativa3Questao{{questao.id}}"
+                >{{questao.alternativa3}}</label
+              >
+            </div>
+            <div class="form-check">
+              <!-- prettier-ignore -->
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alternativaEscolhidaQuestao{{questao.id}}"
+                id="alternativa4Questao{{questao.id}}"
+                value="4"
+                {%if questao.alternativa4foiSelecionada%} checked {%endif%}
+                disabled
+              />
+              <label class="form-check-label" for="alternativa4Questao{{questao.id}}"
+                >{{questao.alternativa4}}</label
+              >
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+{%endif%}

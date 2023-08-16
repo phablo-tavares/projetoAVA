@@ -10,7 +10,8 @@
   <section class="content">
     <div class="container-fluid">
       <!-- Info boxes -->
-      <div class="row" id="informacoesAluno">
+      <!--
+        <div class="row" id="informacoesAluno">
         <div class="col-12 col-sm-6 col-md-4">
           <div class="info-box">
             <span class="info-box-icon bg-dark elevation-1"
@@ -21,11 +22,8 @@
               <span class="info-box-text">User</span>
               <span class="info-box-number nomeAluno">{{user.username}}</span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
-        <!-- /.col -->
         <div class="col-12 col-sm-6 col-md-4">
           <div class="info-box mb-3">
             <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-thumbs-up"></i></span>
@@ -34,13 +32,9 @@
               <span class="info-box-text">Situação</span>
               <span class="info-box-number">Ativo</span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
-        <!-- /.col -->
 
-        <!-- fix for small devices only -->
         <div class="clearfix hidden-md-up"></div>
 
         <div class="col-12 col-sm-6 col-md-4">
@@ -51,16 +45,10 @@
               <span class="info-box-text">Polo</span>
               <span class="info-box-number">Goiânia</span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
-
-        <!-- /.col -->
-        <!-- /.col -->
       </div>
-
-      <!-- /.row -->
+      -->
 
       {% if messages %} {% for message in messages%}
       <div
@@ -87,5 +75,7 @@
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<input type="text" id="token" value="{{csrf_token}}" style="display: none" />
 
 {% endblock content %}

@@ -1,2 +1,212 @@
-<div class="card-container-boletins-de-desempenho-do-aluno">{{cardBoletimDeDesempenho}}</div>
-<div class="card-container-dados-financeiros-do-aluno">{{cardFinanceiro}}</div>
+{% load humanize %}
+
+<div class="card card-success">
+  <div class="card-header">
+    <h3 class="card-title">Visualizar Aluno - {{aluno.nome}}</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="card-container-dados-pessoais-do-aluno">
+      <div class="card card-secondary">
+        <div class="card-header">
+          <h3 class="card-title">Dados Pessoais</h3>
+        </div>
+        <div class="card-body">
+          <table id="example2" class="table table-bordered">
+            <tbody>
+              <tr>
+                <th scope="row">Nome</th>
+                <td>{{aluno.nome}}</td>
+              </tr>
+              <tr>
+                <th scope="row">CPF</th>
+                <td>{{aluno.cpf}}</td>
+              </tr>
+              <tr>
+                <th scope="row">RG</th>
+                <td>{{aluno.rg}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Email</th>
+                <td>{{aluno.email}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Endereço</th>
+                <td>{{aluno.endereco}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sexo</th>
+                <td>
+                  {% if aluno.sexo == "M" %}Masculino{% endif %}{% if aluno.sexo == "F" %}Feminino
+                  {% endif %} {% if aluno.sexo == "O" %}Outro{% endif %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container-boletins-de-desempenho-do-aluno">
+      <div class="card card-secondary">
+        <div class="card-header">
+          <h3 class="card-title">Boletim de Desempenho do Aluno</h3>
+        </div>
+
+        {% if dadosBoletimDeDesempenho is None %}
+        <div class="card-body">Aluno não está matriculado em nenhum curso</div>
+        {% else %}
+        <div class="card-body">
+          <div id="accordionBoletins" class="accordion">
+            {% for curso in dadosBoletimDeDesempenho%}
+            <div class="card card-light">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a
+                    class="d-block w-100"
+                    data-toggle="collapse"
+                    href="#collapseBoletins{{curso.id}}"
+                  >
+                    {{curso.nome}}
+                  </a>
+                </h4>
+              </div>
+              <div
+                id="collapseBoletins{{curso.id}}"
+                class="collapse"
+                data-parent="#accordionBoletins"
+              >
+                <div class="card-body">
+                  {% if curso.boletins is not None%}
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Materia</th>
+                        <th>Nota Obtida</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {%for boletim in curso.boletins %}
+                      <tr>
+                        <td>{{boletim.materia.nome}}</td>
+                        <td>{{boletim.nota}}</td>
+                        {% if boletim.aprovado %}
+                        <td><span class="badge badge-success">Aprovado</span></td>
+                        {% else %}
+                        <td><span class="badge badge-danger">Reprovado</span></td>
+                        {% endif %}
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %} Nenhum boletim gerado para este curso {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card-container-provas-realizadas-pelo-aluno">
+      <div class="card card-secondary">
+        <div class="card-header"><h3 class="card-title">Provas Realizadas Pelo Aluno</h3></div>
+        <div class="card-body">
+          <div class="row">
+            {%for prova in provasQueOAlunoPodeFazer %}
+            <div class="col-12 col-sm-6 col-md-auto">
+              <button
+                class="btn btn-sm bg-gradient-info"
+                onclick="exibirCardProvaAdministrativo('{{urlCardProvaAdministrativo}}','{{csrf_token}}','{{aluno.id}}','{{prova.id}}')"
+              >
+                {{prova.nome}}
+              </button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container-dados-financeiros-do-aluno">
+      <div class="card card-secondary">
+        <div class="card-header">
+          <h3 class="card-title" id="cardHeaderFinanceiro">Dados Financeiros</h3>
+        </div>
+
+        {% if dadosFinanceirosDoAluno is None %}
+        <div class="card-body">Aluno não está matriculado em nenhum curso</div>
+        {% else %}
+        <div class="card-body">
+          <div id="accordionFinanceiro" class="accordion">
+            {% for curso in dadosFinanceirosDoAluno%}
+            <div class="card card-light">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a
+                    class="d-block w-100"
+                    data-toggle="collapse"
+                    href="#collapseFinanceiro{{curso.id}}"
+                  >
+                    {{curso.nome}}
+                  </a>
+                </h4>
+              </div>
+              <div
+                id="collapseFinanceiro{{curso.id}}"
+                class="collapse"
+                data-parent="#accordionFinanceiro"
+              >
+                <div class="card-body">
+                  {% if curso.parcelas is not None%}
+                  <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Valor da Parcela</th>
+                        <th>Data de Vencimento</th>
+                        <th>Status do Pagamento</th>
+                        <th>Boleto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {%for parcela in curso.parcelas %}
+                      <tr>
+                        <td>R${{parcela.valorDaParcela}}</td>
+                        <td>{{parcela.dataDeVencimento|date:"d/m/Y"}}</td>
+                        <td>
+                          {% if parcela.pagamentoRealizado %}
+                          <span class="badge badge-success">Pago</span>
+                          {% else %} {% if parcela.parcelaVencida %}
+                          <span class="badge badge-danger">Atrasado</span>
+                          {% else %}
+                          <span class="badge badge-warning">Pendente</span>
+                          {% endif %} {% endif %}
+                        </td>
+                        <td>
+                          <a
+                            href="{{parcela.boleto.url}}"
+                            target="_blank"
+                            class="btn btn-sm bg-gradient-info"
+                          >
+                            <b>Visualizar</b>
+                          </a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %} Nenhum dado financeiro disponível para este curso {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
