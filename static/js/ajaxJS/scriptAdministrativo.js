@@ -6,6 +6,11 @@ $(document).ready(function () {
 function insertDataInsideTag(tagSelector, content) {
   $(tagSelector).html(content);
 }
+
+//
+//Scripts relacionados ao gerenciamento de alunos//
+//
+
 //prettier-ignore
 function inserirCardNaPaginaPrincipalAdministrativo(url, token, id) {
   id = Number(id);
@@ -26,6 +31,7 @@ function exibirCardGerenciarAlunos(url, token) {
 function visualizarDadosDoAluno(url, token, idDoAluno) {
   inserirCardNaPaginaPrincipalAdministrativo(url, token, idDoAluno);
 }
+
 //prettier-ignore
 function exibirCardProvaAdministrativo(url, token, idDoAluno, idDaProva) {
   idDoAluno = Number(idDoAluno);
@@ -116,6 +122,106 @@ function excluirAluno(urlExcluirAluno, token, idAluno, urlCardGerenciarAlunos) {
       await deletarRegistro(urlExcluirAluno, token, idAluno);
       await Swal.fire("Aluno excluido do sistema!", "", "success");
       exibirCardGerenciarAlunos(urlCardGerenciarAlunos, token);
+    }
+  });
+}
+
+//
+//scripts relacionados ao gerenciamento de cursos
+//
+function exibirCardGerenciarCursos(url, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, 1);
+}
+function exibirCardCriarUmNovoCurso(url, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, 1);
+}
+function exibirCardEditarDadosDeUmCurso(url, token, idCurso) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, idCurso);
+}
+function voltarParaOGerenciamentoDeCursos(url, token) {
+  Swal.fire({
+    title: "Tem certeza que deseja voltar? Dados não salvos serão perdidos",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      exibirCardGerenciarCursos(url, token);
+    }
+  });
+}
+
+//prettier-ignore
+function salvarNovoCurso(urlSalvarCurso, token, urlCardGerenciarCursos) {
+  let dadosCursoSerializado = JSON.stringify($("#dadosParaCriacaoDeUmNovoCurso").serializeArray());
+
+  Swal.fire({
+    title: "Confirmar a criação de um novo curso?",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlSalvarCurso,
+        type: "post",
+        data: {
+          'dadosCursoSerializado': dadosCursoSerializado,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeCursoCriado = JSON.parse(data);
+          await Swal.fire(`Curso ${nomeCursoCriado} criado com sucesso!`, "", "success");
+          exibirCardGerenciarCursos(urlCardGerenciarCursos, token);
+        },
+      });
+    }
+  });
+}
+
+//prettier-ignore
+function salvarEdicaoNoCurso(urlSalvarCurso, token, idDoCurso, urlCardGerenciarCursos) {
+  let dadosCursoSerializado = JSON.stringify($("#dadosParaEdicaoDoCurso").serializeArray());
+  idDoCurso = Number(idDoCurso);
+
+  Swal.fire({
+    title: "Confirmar a edição do curso?",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlSalvarCurso,
+        type: "post",
+        data: {
+          'dadosCursoSerializado': dadosCursoSerializado,
+          'idDoCurso': idDoCurso,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeCursoCriado = JSON.parse(data);
+          await Swal.fire(`Curso ${nomeCursoCriado} editado com sucesso!`, "", "success");
+          exibirCardGerenciarCursos(urlCardGerenciarCursos, token);
+        },
+      });
+    }
+  });
+}
+
+function excluirUmCurso(urlExcluirCurso, token, idCurso, urlCardGerenciarCursos) {
+  Swal.fire({
+    title: "Tem certeza que deseja excluir o curso? Operação Irreversivel!!",
+    showDenyButton: true,
+    confirmButtonText: "Sim",
+    denyButtonText: `Não`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deletarRegistro(urlExcluirCurso, token, idCurso);
+      await Swal.fire("Curso excluido do sistema!", "", "success");
+      exibirCardGerenciarCursos(urlCardGerenciarCursos, token);
     }
   });
 }

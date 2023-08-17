@@ -1,0 +1,30 @@
+<div class="card card-success">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-dark btn-sm"
+      style="float: left"
+      onclick="voltarParaOGerenciamentoDeCursos('{{urlCardGerenciarCursos}}', '{{csrf_token}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title" id="cardHeaderEditarDados">Criar um novo curso</h3>
+    <button
+      class="btn btn-dark btn-sm"
+      style="float: right"
+      onclick="salvarNovoCurso('{{urlSalvarCurso}}','{{csrf_token}}','{{urlCardGerenciarCursos}}')"
+    >
+      Salvar
+    </button>
+  </div>
+
+  <div class="card-body">
+    <form action="" id="dadosParaCriacaoDeUmNovoCurso">
+      <div class="form-group row">
+        <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nomeDoCurso"
+          >Nome do curso</label
+        >
+        <input class="form-control col" id="nomeDoCurso" name="nomeDoCurso" type="text" required />
+      </div>
+    </form>
+  </div>
+</div>

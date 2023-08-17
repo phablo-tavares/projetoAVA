@@ -1,0 +1,49 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <h3 class="card-title d-flex align-items-center">Gerenciar Cursos</h3>
+      <button
+        class="btn btn-sm btn-success"
+        onclick="exibirCardCriarUmNovoCurso('{{urlCriarUmNovoCurso}}','{{csrf_token}}')"
+      >
+        Criar um novo curso
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% if cursos is not None%}
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Nome do Curso</th>
+          <th style="width: 20%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for curso in cursos %}
+        <tr>
+          <td>{{curso.nome}}</td>
+          <td
+            class="d-flex justify-content-between border-top-0 border-left-0 border-right-0 {% if forloop.last %}border-bottom-0 {% endif %}"
+          >
+            <button
+              class="btn btn-sm btn-outline-info"
+              onclick="exibirCardEditarDadosDeUmCurso('{{urlCardEditarDadosDeUmCurso}}','{{csrf_token}}','{{curso.id}}')"
+            >
+              Editar Dados
+            </button>
+            <button
+              class="btn btn-sm btn-outline-danger"
+              onclick="excluirUmCurso('{{urlExcluirCurso}}','{{csrf_token}}','{{curso.id}}','{{urlCardGerenciarCursos}}')"
+            >
+              Excluir
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %} Nenhum curso cadastrado no sistema. {% endif %}
+  </div>
+</div>

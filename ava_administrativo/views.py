@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from ava.models import Aluno, ProvaRealizadaPeloAluno, Prova, Questao, Materia, BoletimDeDesempenhoDoAluno
+from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, BoletimDeDesempenhoDoAluno
 from ava.views import CardFinanceiro, CardBoletimDeDesempenho
 import json
 from django.http import JsonResponse
@@ -21,14 +21,18 @@ def Dashboard(request):
     context = {
         'user': userAuth,
         'urlCardGerenciarAlunos': '/card-gerenciar-alunos',
+        'urlCardGerenciarCursos': '/card-gerenciar-cursos',
     }
 
     return render(request, 'ava_administrativo.html', context)
 
 
+#############################################
+#######  Views relacionadas a alunos  #######
+#############################################
+
 @login_required(login_url="/")
 def CardGerenciarAlunos(request):
-    userAuth = request.user
 
     if Aluno.objects.exists():
         alunos = Aluno.objects.all()
@@ -36,7 +40,6 @@ def CardGerenciarAlunos(request):
         alunos = None
 
     context = {
-        'user': userAuth,
         'alunos': alunos,
         'urlCardGerenciarAlunos': '/card-gerenciar-alunos',
         'urlExcluirAluno': '/excluir-aluno',
@@ -70,8 +73,6 @@ def CardVisualizarDadosDoAluno(request):
     return render(request, 'cardVisualizarDadosDoAluno.html', context)
 
 
-# finalizar essa parte. falta fazer a requisição ajax com os parametros necessários para chegar nessa view
-# ao clicar em uma prova, exibir o card desta prova no container principal com a opção de voltar
 @login_required(login_url="/")
 def CardProvaAdministrativo(request):
     idDaProva = request.GET['idDaProva']
@@ -165,3 +166,70 @@ def ExcluirAluno(request):
     user = User.objects.get(id=aluno.user.id)
     aluno.delete()
     user.delete()
+
+
+#############################################
+#######  Views relacionadas a cursos  #######
+#############################################
+
+@login_required(login_url="/")
+def CardGerenciarCursos(request):
+
+    if Curso.objects.exists():
+        cursos = Curso.objects.all()
+    else:
+        cursos = None
+
+    context = {
+        'cursos': cursos,
+        'urlCriarUmNovoCurso': '/card-criar-novo-curso',
+        'urlCardEditarDadosDeUmCurso': '/card-editar-dados-do-curso',
+        'urlExcluirCurso': '/excluir-curso',
+        'urlCardGerenciarCursos': '/card-gerenciar-cursos',
+    }
+    return render(request, 'cardGerenciarCursos.html', context)
+
+
+@login_required(login_url="/")
+def CardCriarUmNovoCurso(request):
+    context = {
+        'urlCardGerenciarCursos': '/card-gerenciar-cursos',
+        'urlSalvarCurso': '/salvar-curso',
+    }
+    return render(request, 'cardCriarNovoCurso.html', context)
+
+
+@login_required(login_url="/")
+def CardEditarDadosDeUmCurso(request):
+    idDoCurso = request.GET['id']
+    curso = Curso.objects.get(id=idDoCurso)
+    context = {
+        'curso': curso,
+        'urlCardGerenciarCursos': '/card-gerenciar-cursos',
+        'urlSalvarCurso': '/salvar-curso',
+    }
+    return render(request, 'cardEditarDadosDeUmCurso.html', context)
+
+
+@login_required(login_url="/")
+def SalvarCurso(request):
+    if 'idDoCurso' in request.POST:
+        curso = Curso.objects.get(id=request.POST['idDoCurso'])
+    else:
+        curso = Curso()
+
+    dadosCursoSerializado = json.loads(request.POST['dadosCursoSerializado'])
+
+    for dado in dadosCursoSerializado:
+        if dado['name'] == 'nomeDoCurso':
+            curso.nome = dado['value']
+
+    curso.save()
+
+    return JsonResponse(json.dumps(curso.nome, indent=4, cls=CustomEncoder), safe=False)
+
+
+@login_required(login_url="/")
+def ExcluirCurso(request):
+    id = request.POST['id']
+    Curso.objects.get(id=id).delete()
