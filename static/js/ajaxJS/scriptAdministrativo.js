@@ -6,11 +6,6 @@ $(document).ready(function () {
 function insertDataInsideTag(tagSelector, content) {
   $(tagSelector).html(content);
 }
-
-//
-//Scripts relacionados ao gerenciamento de alunos//
-//
-
 //prettier-ignore
 function inserirCardNaPaginaPrincipalAdministrativo(url, token, id) {
   id = Number(id);
@@ -25,6 +20,9 @@ function inserirCardNaPaginaPrincipalAdministrativo(url, token, id) {
   });
 }
 
+//
+//Scripts relacionados ao gerenciamento de alunos//
+//
 function exibirCardGerenciarAlunos(url, token) {
   inserirCardNaPaginaPrincipalAdministrativo(url, token, 1);
 }
@@ -184,7 +182,7 @@ function salvarNovoCurso(urlSalvarCurso, token, urlCardGerenciarCursos) {
 function salvarEdicaoNoCurso(urlSalvarCurso, token, idDoCurso, urlCardGerenciarCursos) {
   let dadosCursoSerializado = JSON.stringify($("#dadosParaEdicaoDoCurso").serializeArray());
   idDoCurso = Number(idDoCurso);
-
+  
   Swal.fire({
     title: "Confirmar a edição do curso?",
     showCancelButton: true,
@@ -222,6 +220,124 @@ function excluirUmCurso(urlExcluirCurso, token, idCurso, urlCardGerenciarCursos)
       await deletarRegistro(urlExcluirCurso, token, idCurso);
       await Swal.fire("Curso excluido do sistema!", "", "success");
       exibirCardGerenciarCursos(urlCardGerenciarCursos, token);
+    }
+  });
+}
+
+//
+// scripts relacionados ao gerenciamento de matérias
+//
+
+function exibirCardGerenciarMaterias(url, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, 1);
+}
+function exibirCardCriarUmaNovaMateria(url, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, 1);
+}
+function exibirCardEditarDadosDeUmaMateria(url, token, idMateria) {
+  inserirCardNaPaginaPrincipalAdministrativo(url, token, idMateria);
+}
+function voltarParaOGerenciamentoDeMaterias(url, token) {
+  Swal.fire({
+    title: "Tem certeza que deseja voltar? Dados não salvos serão perdidos",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      exibirCardGerenciarMaterias(url, token);
+    }
+  });
+}
+
+//prettier-ignore
+function salvarNovaMateria(urlSalvarMateria, token, urlCardGerenciarMaterias) {
+  let dadosMateriaSerializado = $("#dadosParaCriacaoDeUmaNovaMateria").serializeArray();
+  dadosMateriaSerializado.push({
+    "name":"cursosParaCadastrarNaMateria",
+    "value":[]
+  });
+  $(".form-check-input:checked").each(function(){
+    dadosMateriaSerializado[1]['value'].push($(this).val());
+  });
+  dadosMateriaSerializado = JSON.stringify(dadosMateriaSerializado);
+  console.log(dadosMateriaSerializado);
+  
+  Swal.fire({
+    title: "Confirmar a criação de uma nova matéria?",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlSalvarMateria,
+        type: "post",
+        data: {
+          'dadosMateriaSerializado': dadosMateriaSerializado,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeMateriaCriada = JSON.parse(data);
+          await Swal.fire(`Matéria ${nomeMateriaCriada} criada com sucesso!`, "", "success");
+          exibirCardGerenciarMaterias(urlCardGerenciarMaterias, token)
+        },
+      });
+    }
+  });
+}
+
+function excluirUmaMateria(urlExcluirMateria, token, idMateria, urlCardGerenciarMaterias) {
+  Swal.fire({
+    title: "Tem certeza que deseja excluir esta matéria? Operação Irreversivel!!",
+    showDenyButton: true,
+    confirmButtonText: "Sim",
+    denyButtonText: `Não`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deletarRegistro(urlExcluirMateria, token, idMateria);
+      await Swal.fire("Matéria excluida do sistema!", "", "success");
+      exibirCardGerenciarMaterias(urlCardGerenciarMaterias, token);
+    }
+  });
+}
+
+//prettier-ignore
+function salvarEdicaoNaMateria(urlSalvarMateria, token, idDaMateria, urlCardGerenciarMaterias) {
+  let dadosMateriaSerializado = $("#dadosParaEdicaoDaMateria").serializeArray();
+  dadosMateriaSerializado.push({
+    "name":"cursosParaCadastrarNaMateria",
+    "value":[]
+  });
+  $(".form-check-input:checked").each(function(){
+    dadosMateriaSerializado[1]['value'].push($(this).val());
+  });
+  dadosMateriaSerializado = JSON.stringify(dadosMateriaSerializado);
+  console.log(dadosMateriaSerializado);
+  
+  Swal.fire({
+    title: "Confirmar a edição da materia?",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlSalvarMateria,
+        type: "post",
+        data: {
+          'dadosMateriaSerializado': dadosMateriaSerializado,
+          'idDaMateria': idDaMateria,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeMateriaEditado = JSON.parse(data);
+          await Swal.fire(`Matéria ${nomeMateriaEditado} editada com sucesso!`, "", "success");
+          exibirCardGerenciarMaterias(urlCardGerenciarMaterias, token);
+        },
+      });
     }
   });
 }

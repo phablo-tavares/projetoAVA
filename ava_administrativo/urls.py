@@ -1,9 +1,10 @@
 from django.urls import include, path
 
-from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso
+from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria
 
 urlpatterns = [
     path('ava_administrativo',  Dashboard),
+
     path('card-gerenciar-alunos',  CardGerenciarAlunos),
     path('card-visualizar-dados-do-aluno',  CardVisualizarDadosDoAluno),
     path('card-prova-administrativo',  CardProvaAdministrativo),
@@ -19,4 +20,13 @@ urlpatterns = [
     path('card-editar-dados-do-curso',  CardEditarDadosDeUmCurso),
     path('salvar-curso',  SalvarCurso),
     path('excluir-curso',  ExcluirCurso),
+
+    path('card-gerenciar-materias',  CardGerenciarMaterias),
+    path('card-criar-nova-materia',  CardCriarUmaNovaMateria),
+    path('card-editar-dados-da-materia',  CardEditarDadosDeUmaMateria),
+    path('salvar-materia',  SalvarMateria),
+    path('excluir-materia',  ExcluirMateria),
+
+
+
 ]

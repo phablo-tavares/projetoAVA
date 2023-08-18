@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, BoletimDeDesempenhoDoAluno
+from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, MateriaDoCurso, BoletimDeDesempenhoDoAluno
 from ava.views import CardFinanceiro, CardBoletimDeDesempenho
 import json
 from django.http import JsonResponse
@@ -22,6 +22,7 @@ def Dashboard(request):
         'user': userAuth,
         'urlCardGerenciarAlunos': '/card-gerenciar-alunos',
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
     }
 
     return render(request, 'ava_administrativo.html', context)
@@ -47,7 +48,7 @@ def CardGerenciarAlunos(request):
         'urlCardVisualizarDadosDoAluno': '/card-visualizar-dados-do-aluno',
         'urlCardEditarDadosPessoaisDeUmAluno': '/card-editar-dados-pessoais-de-um-aluno',
     }
-    return render(request, 'cardGerenciarAlunos.html', context)
+    return render(request, 'templates relacionados a alunos/cardGerenciarAlunos.html', context)
 
 
 @login_required(login_url="/")
@@ -70,7 +71,7 @@ def CardVisualizarDadosDoAluno(request):
         'provasQueOAlunoPodeFazer': provasQueOAlunoPodeFazer,
         'urlCardProvaAdministrativo': "/card-prova-administrativo",
     }
-    return render(request, 'cardVisualizarDadosDoAluno.html', context)
+    return render(request, 'templates relacionados a alunos/cardVisualizarDadosDoAluno.html', context)
 
 
 @login_required(login_url="/")
@@ -95,7 +96,7 @@ def CardProvaAdministrativo(request):
                'urlCardVisualizarDadosDoAluno': "/card-visualizar-dados-do-aluno",
                'aluno': aluno,
                }
-    return render(request, 'cardProvaAdministrativo.html', context)
+    return render(request, 'templates relacionados a alunos/cardProvaAdministrativo.html', context)
 
 
 @login_required(login_url="/")
@@ -120,7 +121,7 @@ def CardEditarDadosPessoaisDeUmAluno(request):
         'urlPermitirRefazerAProva': '/permitir-refazer-uma-prova',
         'provasRealizadasOQualOAlunoReprovou': provasRealizadasOQualOAlunoReprovou,
     }
-    return render(request, 'cardEditarDadosPessoaisDeUmAluno.html', context)
+    return render(request, 'templates relacionados a alunos/cardEditarDadosPessoaisDeUmAluno.html', context)
 
 
 @login_required(login_url="/")
@@ -187,7 +188,7 @@ def CardGerenciarCursos(request):
         'urlExcluirCurso': '/excluir-curso',
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
     }
-    return render(request, 'cardGerenciarCursos.html', context)
+    return render(request, 'templates relacionados a cursos/cardGerenciarCursos.html', context)
 
 
 @login_required(login_url="/")
@@ -196,7 +197,7 @@ def CardCriarUmNovoCurso(request):
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
         'urlSalvarCurso': '/salvar-curso',
     }
-    return render(request, 'cardCriarNovoCurso.html', context)
+    return render(request, 'templates relacionados a cursos/cardCriarNovoCurso.html', context)
 
 
 @login_required(login_url="/")
@@ -208,7 +209,7 @@ def CardEditarDadosDeUmCurso(request):
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
         'urlSalvarCurso': '/salvar-curso',
     }
-    return render(request, 'cardEditarDadosDeUmCurso.html', context)
+    return render(request, 'templates relacionados a cursos/cardEditarDadosDeUmCurso.html', context)
 
 
 @login_required(login_url="/")
@@ -233,3 +234,107 @@ def SalvarCurso(request):
 def ExcluirCurso(request):
     id = request.POST['id']
     Curso.objects.get(id=id).delete()
+
+
+#############################################
+######  Views relacionadas a materias  ######
+#############################################
+@login_required(login_url="/")
+def CardGerenciarMaterias(request):
+
+    if Materia.objects.exists():
+        materias = Materia.objects.all()
+    else:
+        materias = None
+
+    context = {
+        'materias': materias,
+        'urlCriarUmaNovaMateria': '/card-criar-nova-materia',
+        'urlExcluirMateria': '/excluir-materia',
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlCardEditarDadosDeUmaMateria': '/card-editar-dados-da-materia',
+    }
+    return render(request, 'templates relacionados a materias/cardGerenciarMaterias.html', context)
+
+
+@login_required(login_url="/")
+def CardCriarUmaNovaMateria(request):
+    if Curso.objects.exists():
+        cursos = Curso.objects.all()
+    else:
+        cursos = None
+    context = {
+        'cursos': cursos,
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlSalvarMateria': '/salvar-materia',
+    }
+    return render(request, 'templates relacionados a materias/cardCriarUmaNovaMateria.html', context)
+
+
+@login_required(login_url="/")
+def CardEditarDadosDeUmaMateria(request):
+    idDaMateria = request.GET['id']
+    materia = Materia.objects.get(id=idDaMateria)
+
+    if Curso.objects.exists():
+        cursos = Curso.objects.all()
+        for curso in cursos:
+            if MateriaDoCurso.objects.filter(materia=materia, curso=curso).exists():
+                curso.AMateriaEstaPresenteNesteCurso = True
+    else:
+        cursos = None
+
+    context = {
+        'materia': materia,
+        'cursos': cursos,
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlSalvarMateria': '/salvar-materia',
+    }
+    return render(request, 'templates relacionados a materias/cardEditarDadosDeUmaMateria.html', context)
+
+
+@login_required(login_url="/")
+def SalvarMateria(request):
+    if 'idDaMateria' in request.POST:
+        materia = Materia.objects.get(id=request.POST['idDaMateria'])
+    else:
+        materia = Materia()
+        materia.nome = ""
+        materia.save()
+
+    dadosMateriaSerializado = json.loads(
+        request.POST['dadosMateriaSerializado'])
+
+    for dado in dadosMateriaSerializado:
+        if dado['name'] == 'nomeDaMateria':
+            materia.nome = dado['value']
+
+        if dado['name'] == 'cursosParaCadastrarNaMateria' and dado['value'] is not []:
+            idCursos = dado['value']
+            materiasDoCurso = MateriaDoCurso.objects.filter(
+                materia_id=materia.id).all()
+            for materiaDoCurso in materiasDoCurso:
+                tem = False
+                for id in idCursos:
+                    if int(id) == materiaDoCurso.curso.id:
+                        tem = True
+                if not tem:
+                    materiaDoCurso.delete()
+
+            for id in idCursos:
+                if not MateriaDoCurso.objects.filter(materia_id=materia.id, curso_id=int(id)).exists():
+                    materiaDoCurso = MateriaDoCurso()
+                    materiaDoCurso.materia = materia
+                    materiaDoCurso.curso = Curso.objects.get(id=int(id))
+                    materiaDoCurso.save()
+
+    materia.save()
+
+    return JsonResponse(json.dumps(materia.nome, indent=4, cls=CustomEncoder), safe=False)
+
+
+@login_required(login_url="/")
+def ExcluirMateria(request):
+    id = request.POST['id']
+    Materia.objects.get(id=id).delete()
+    return redirect('/')

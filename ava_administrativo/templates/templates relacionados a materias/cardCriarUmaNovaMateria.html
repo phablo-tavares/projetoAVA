@@ -1,0 +1,54 @@
+<div class="card card-success">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <button
+      class="btn btn-dark btn-sm"
+      style="float: left"
+      onclick="voltarParaOGerenciamentoDeMaterias('{{urlCardGerenciarMaterias}}', '{{csrf_token}}')"
+    >
+      Voltar
+    </button>
+    <h3 class="card-title" id="cardHeaderEditarDados">Criar uma nova matéria</h3>
+    <button
+      class="btn btn-dark btn-sm"
+      style="float: right"
+      onclick="salvarNovaMateria('{{urlSalvarMateria}}','{{csrf_token}}','{{urlCardGerenciarMaterias}}')"
+    >
+      Salvar
+    </button>
+  </div>
+
+  <div class="card-body">
+    <form action="" id="dadosParaCriacaoDeUmaNovaMateria">
+      <div class="form-group row">
+        <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nomeDaMateria"
+          >Nome da matéria</label
+        >
+        <input
+          class="form-control col"
+          id="nomeDaMateria"
+          name="nomeDaMateria"
+          type="text"
+          required
+        />
+      </div>
+      {% if cursos is not none %}
+      <div class="container mt-1">
+        <div class="row font-weight-bold">Cursos em que esta matéria estará disponível</div>
+        <div class="row">
+          {% for curso in cursos %}
+          <div class="form-check col mt-1 ml-1">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value="{{curso.id}}"
+              id="curso{{curso.id}}"
+            />
+            <label class="form-check-label" for="curso{{curso.id}}"> {{curso.nome}} </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
