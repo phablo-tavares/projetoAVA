@@ -1,0 +1,112 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <button
+        class="btn btn-light btn-sm"
+        style="float: left"
+        onclick="voltarParaOGerenciamentoDeMaterias('{{urlCardGerenciarMaterias}}', '{{csrf_token}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title d-flex align-items-center">Cadastrar prova - {{materia.nome}}</h3>
+      <button
+        class="btn btn-sm btn-success"
+        onclick="criarProva('{{urlCriarProva}}', '{{csrf_token}}', '{{materia.id}}', '{{urlCardGerenciarMaterias}}','{{materia.nome}}')"
+      >
+        Salvar Prova
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <form id="formProvaParaCadastrarNaMateria">
+      <div class="form-group row">
+        <label for="nomeDaProva" class="col">Nome da Prova</label>
+        <input
+          class="col col-md-9"
+          type="text"
+          class="form-control form-control-sm"
+          id="nomeDaProva"
+          name="nomeDaProva"
+          placeholder="Informe o nome desta prova."
+        />
+      </div>
+      <div class="row" id="questao1">
+        <div class="col col-12 bg-light card">
+          <div class="form-group">
+            <label for="enunciadoQuestao1">Enunciado da Questão 1</label>
+            <textarea
+              type="textarea"
+              class="form-control form-control-sm"
+              id="enunciadoQuestao1"
+              name="enunciadoQuestao1"
+              placeholder="Digite aqui o enunciado da questão"
+              style="max-height: 100px"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="alternativa1Questao1">Alternativa 1</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="alternativa1Questao1"
+              name="alternativa1Questao1"
+              placeholder="Digite aqui a alternativa "
+            />
+          </div>
+          <div class="form-group">
+            <label for="alternativa2Questao1">Alternativa 2</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="alternativa2Questao1"
+              name="alternativa2Questao1"
+              placeholder="Digite aqui a alternativa "
+            />
+          </div>
+          <div class="form-group">
+            <label for="alternativa3Questao1">Alternativa 3</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="alternativa3Questao1"
+              name="alternativa3Questao1"
+              placeholder="Digite aqui a alternativa "
+            />
+          </div>
+          <div class="form-group">
+            <label for="alternativa4">Alternativa 4</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="alternativa4Questao1"
+              name="alternativa4Questao1"
+              placeholder="Digite aqui a alternativa "
+            />
+          </div>
+          <div class="form-group">
+            <label for="alternativaCorretaQuestao1">Alternativa Correta</label>
+            <select
+              class="form-control form-control-sm"
+              name="alternativaCorretaQuestao1"
+              id="alternativaCorretaQuestao1"
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-sm btn-primary" onclick="adicioarMaisUmaQuestaoNaProva()">
+        Adicionar outra questão
+      </button>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" id="quantidadeDeQuestoesAtual" value="1" />

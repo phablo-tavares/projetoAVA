@@ -1,0 +1,75 @@
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-light btn-sm"
+        style="float: left"
+        onclick="voltarParaOGerenciamentoDeMateriasSemPedidoDeConfirmacao('{{urlCardGerenciarMaterias}}', '{{csrf_token}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title" id="cardHeaderEditarDados">Materiais - {{materia.nome}}</h3>
+      <div></div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="card card-success">
+      <div class="card-header">Cadastrar Material</div>
+      <div class="card-body">
+        <form id="cadastrarMaterial">
+          <div class="form-group row">
+            <label for="arquivo" class="col col-4">Escolha um arquivo para adicionar:</label>
+            <input
+              type="file"
+              class="form-control-file form-control-sm col"
+              id="arquivo"
+              name="arquivo"
+            />
+          </div>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="enviarMaterial('{{urlEnviarMaterial}}','{{csrf_token}}','{{materia.id}}')"
+            type="button"
+          >
+            Enviar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% if materiais is not None%}
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Nome do anexo</th>
+          <th>Link</th>
+          <th style="width: 8%"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for material in materiais %}
+        <tr>
+          <td>{{material.nomeDoMaterial}}</td>
+          <td>
+            <a target="_blank" href="{{material.anexo.url}}" class="link-primary"
+              >{{material.anexo.url}}</a
+            >
+          </td>
+          <td
+            class="d-flex justify-content-between border-top-0 border-left-0 border-right-0 {% if forloop.last %}border-bottom-0 {% endif %}"
+          >
+            <button
+              class="btn btn-sm btn-outline-danger"
+              onclick="excluirUmMaterial('{{urlExcluirMaterial}}','{{csrf_token}}','{{material.id}}','{{materia.id}}','{{urlMateriaisDeUmaMateria}}')"
+            >
+              Excluir
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %} Nenhum material cadastrado para a materia {{materia.nome}}{% endif %}
+  </div>
+</div>

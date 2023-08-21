@@ -1,6 +1,7 @@
 from django.urls import include, path
 
-from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria
+
+from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva
 
 urlpatterns = [
     path('ava_administrativo',  Dashboard),
@@ -25,7 +26,14 @@ urlpatterns = [
     path('card-criar-nova-materia',  CardCriarUmaNovaMateria),
     path('card-editar-dados-da-materia',  CardEditarDadosDeUmaMateria),
     path('salvar-materia',  SalvarMateria),
+    path('card-materiais-de-uma-materia',  CardMateriaisDeUmaMateria),
+    path('card-cadastrar-prova',  CardCadastrarProva),
+    path('criar-prova',  CriarProva),
     path('excluir-materia',  ExcluirMateria),
+    path('excluir-material',  ExcluirMaterial),
+    path('excluir-prova',  ExcluirProva),
+    path('salvar-material',  SalvarMaterial),
+    path('card-visualizar-prova',  cardVisualizarProva),
 
 
 

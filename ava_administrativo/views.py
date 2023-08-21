@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, MateriaDoCurso, BoletimDeDesempenhoDoAluno
+from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, Material, MateriaDoCurso, BoletimDeDesempenhoDoAluno
 from ava.views import CardFinanceiro, CardBoletimDeDesempenho
 import json
 from django.http import JsonResponse
 from ava.util.util import gerarDadosBoletimDeDesempenhoDeUmAluno, gerarDadosFinanceirosDoAluno, dadosParaRenderizarAProvaRealizadaPeloAluno, CursosEmQueOAlunoEstaMatriculado, MateriasDeUmCurso
-# Create your views here.
+from django.core.files.storage import FileSystemStorage
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -253,6 +253,9 @@ def CardGerenciarMaterias(request):
         'urlExcluirMateria': '/excluir-materia',
         'urlCardGerenciarMaterias': '/card-gerenciar-materias',
         'urlCardEditarDadosDeUmaMateria': '/card-editar-dados-da-materia',
+        'urlMateriaisDeUmaMateria': '/card-materiais-de-uma-materia',
+        'urlCardCadastrarProva': '/card-cadastrar-prova',
+        'urlCardVisualizarProva': '/card-visualizar-prova',
     }
     return render(request, 'templates relacionados a materias/cardGerenciarMaterias.html', context)
 
@@ -334,7 +337,119 @@ def SalvarMateria(request):
 
 
 @login_required(login_url="/")
+def CardMateriaisDeUmaMateria(request):
+    idMateria = request.GET['id']
+    materia = Materia.objects.get(id=idMateria)
+    if Material.objects.filter(materia_id=idMateria).exists():
+        materiais = Material.objects.filter(materia_id=idMateria)
+    else:
+        materiais = None
+    context = {
+        'materiais': materiais,
+        'materia': materia,
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlExcluirMaterial': '/excluir-material',
+        'urlMateriaisDeUmaMateria': '/card-materiais-de-uma-materia',
+        'urlEnviarMaterial': '/salvar-material',
+    }
+    return render(request, 'templates relacionados a materias/cardMateriaisDeUmaMateria.html', context)
+
+
+@login_required(login_url="/")
+def SalvarMaterial(request):
+    material = request.FILES['file']
+    fs1 = FileSystemStorage()
+    filename = fs1.save(material.name, material)
+    urlMaterial = fs1.url(filename)
+    idMateria = int(request.POST['idMateria'])
+    materia = Materia.objects.get(id=idMateria)
+
+    material = Material.objects.create(nomeDoMaterial=filename,
+                                       anexo=urlMaterial, materia=materia)
+    material.save()
+    return redirect('/')
+
+
+@login_required(login_url="/")
 def ExcluirMateria(request):
     id = request.POST['id']
     Materia.objects.get(id=id).delete()
+    return redirect('/')
+
+
+@login_required(login_url="/")
+def ExcluirMaterial(request):
+    id = request.POST['id']
+    Material.objects.get(id=id).delete()
+    return redirect('/')
+
+
+@login_required(login_url="/")
+def CardCadastrarProva(request):
+    id = request.GET['id']
+    materia = Materia.objects.get(id=id)
+
+    context = {
+        'materia': materia,
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlCriarProva': '/criar-prova',
+    }
+
+    return render(request, 'templates relacionados a materias/cardCadastrarProva.html', context)
+
+
+@login_required(login_url="/")
+def CriarProva(request):
+    dadosProvaSerializado = json.loads(request.POST['dadosProvaSerializado'])
+    quantidadeDeQuestoes = int((len(dadosProvaSerializado) - 1)/6)
+
+    questoes = []
+    for i in range(quantidadeDeQuestoes):
+        questao = Questao()
+        questoes.append(questao)
+
+    prova = Prova()
+    prova.nome = dadosProvaSerializado[0]['value']
+    prova.materia = Materia.objects.get(id=int(request.POST['idDaMateria']))
+    prova.save()
+
+    dadosProvaSerializado = dadosProvaSerializado[1:]
+    for i in range(quantidadeDeQuestoes):
+        inicio = i * 6
+        fim = (i + 1) * 6
+        dadosQuestao = dadosProvaSerializado[inicio:fim]
+        questao = questoes[i]
+        questao.enunciado = dadosQuestao[0]['value']
+        questao.alternativa1 = dadosQuestao[1]['value']
+        questao.alternativa2 = dadosQuestao[2]['value']
+        questao.alternativa3 = dadosQuestao[3]['value']
+        questao.alternativa4 = dadosQuestao[4]['value']
+        questao.alternativaCorreta = int(dadosQuestao[5]['value'])
+        questao.prova = prova
+        questao.save()
+
+    return JsonResponse(json.dumps(prova.nome, indent=4, cls=CustomEncoder), safe=False)
+
+
+@login_required(login_url="/")
+def cardVisualizarProva(request):
+    idDaMateria = request.GET['id']
+    materia = Materia.objects.get(id=idDaMateria)
+    prova = Prova.objects.get(materia=materia)
+    questoes = Questao.objects.filter(prova=prova)
+
+    context = {
+        'materia': materia,
+        'prova': prova,
+        'questoes': questoes,
+        'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlExcluirProva': '/excluir-prova',
+    }
+    return render(request, 'templates relacionados a materias/cardVisualizarProva.html', context)
+
+
+@login_required(login_url="/")
+def ExcluirProva(request):
+    id = request.POST['id']
+    Prova.objects.get(id=id).delete()
     return redirect('/')
