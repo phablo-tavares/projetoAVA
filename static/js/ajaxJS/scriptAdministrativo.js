@@ -403,75 +403,94 @@ function adicioarMaisUmaQuestaoNaProva() {
   $("#quantidadeDeQuestoesAtual").val(`${quantidadeDeQuestoes}`);
 
   let questaoParaAdicionarNaProva = `
-  <div class="row" id="questao${quantidadeDeQuestoes}">
-  <div class="col col-12 bg-light card">
-    <div class="form-group">
-      <label for="enunciadoQuestao${quantidadeDeQuestoes}">Enunciado da Questão ${quantidadeDeQuestoes}</label>
-      <textarea
-        type="textarea"
-        class="form-control form-control-sm"
-        id="enunciadoQuestao${quantidadeDeQuestoes}"
-        name="enunciadoQuestao${quantidadeDeQuestoes}"
-        placeholder="Digite aqui o enunciado da questão"
-        style="max-height: 100px"
-      ></textarea>
+  <div class="row card card-secondary" id="Questao${quantidadeDeQuestoes}">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="card-title">Questão</h3>
+        <button
+          class="btn btn-sm btn-danger"
+          onclick="removerQuestãoDaProva('${quantidadeDeQuestoes}')"
+        >
+          Excluir Questão
+        </button>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="alternativa1Questao${quantidadeDeQuestoes}">Alternativa 1</label>
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        id="alternativa1Questao${quantidadeDeQuestoes}"
-        name="alternativa1Questao${quantidadeDeQuestoes}"
-        placeholder="Digite aqui a alternativa "
-      />
-    </div>
-    <div class="form-group">
-      <label for="alternativa2Questao${quantidadeDeQuestoes}">Alternativa 2</label>
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        id="alternativa2Questao${quantidadeDeQuestoes}"
-        name="alternativa2Questao${quantidadeDeQuestoes}"
-        placeholder="Digite aqui a alternativa "
-      />
-    </div>
-    <div class="form-group">
-      <label for="alternativa3Questao${quantidadeDeQuestoes}">Alternativa 3</label>
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        id="alternativa3Questao${quantidadeDeQuestoes}"
-        name="alternativa3Questao${quantidadeDeQuestoes}"
-        placeholder="Digite aqui a alternativa "
-      />
-    </div>
-    <div class="form-group">
-      <label for="alternativa${quantidadeDeQuestoes}">Alternativa 4</label>
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        id="alternativa4Questao${quantidadeDeQuestoes}"
-        name="alternativa4Questao${quantidadeDeQuestoes}"
-        placeholder="Digite aqui a alternativa "
-      />
-    </div>
-    <div class="form-group">
-      <label for="alternativaCorretaQuestao1">Alternativa Correta</label>
-      <select
-        class="form-control form-control-sm"
-        name="alternativaCorretaQuestao${quantidadeDeQuestoes}"
-        id="alternativaCorretaQuestao${quantidadeDeQuestoes}"
-      >
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-      </select>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="enunciadoQuestao${quantidadeDeQuestoes}">Enunciado</label>
+        <textarea
+          type="textarea"
+          class="form-control form-control-sm"
+          id="enunciadoQuestao${quantidadeDeQuestoes}"
+          name="enunciadoQuestao${quantidadeDeQuestoes}"
+          placeholder="Digite aqui o enunciado da questão"
+          style="max-height: 100px"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <label for="alternativa1Questao${quantidadeDeQuestoes}">Alternativa 1</label>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="alternativa1Questao${quantidadeDeQuestoes}"
+          name="alternativa1Questao${quantidadeDeQuestoes}"
+          placeholder="Digite aqui a alternativa "
+        />
+      </div>
+      <div class="form-group">
+        <label for="alternativa2Questao${quantidadeDeQuestoes}">Alternativa 2</label>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="alternativa2Questao${quantidadeDeQuestoes}"
+          name="alternativa2Questao${quantidadeDeQuestoes}"
+          placeholder="Digite aqui a alternativa "
+        />
+      </div>
+      <div class="form-group">
+        <label for="alternativa3Questao${quantidadeDeQuestoes}">Alternativa 3</label>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="alternativa3Questao${quantidadeDeQuestoes}"
+          name="alternativa3Questao${quantidadeDeQuestoes}"
+          placeholder="Digite aqui a alternativa "
+        />
+      </div>
+      <div class="form-group">
+        <label for="alternativa${quantidadeDeQuestoes}">Alternativa 4</label>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="alternativa4Questao${quantidadeDeQuestoes}"
+          name="alternativa4Questao${quantidadeDeQuestoes}"
+          placeholder="Digite aqui a alternativa "
+        />
+      </div>
+      <div class="form-group">
+        <label for="alternativaCorretaQuestao1">Alternativa Correta</label>
+        <select
+          class="form-control form-control-sm"
+          name="alternativaCorretaQuestao${quantidadeDeQuestoes}"
+          id="alternativaCorretaQuestao${quantidadeDeQuestoes}"
+        >
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
     </div>
   </div>
-</div>`;
+  `;
   $("#formProvaParaCadastrarNaMateria").append(questaoParaAdicionarNaProva);
+}
+
+function removerQuestãoDaProva(id) {
+  $(`#Questao${id}`).remove();
+  let quantidadeDeQuestoes = Number($("#quantidadeDeQuestoesAtual").val());
+  quantidadeDeQuestoes--;
+  $("#quantidadeDeQuestoesAtual").val(`${quantidadeDeQuestoes}`);
 }
 
 //prettier-ignore
