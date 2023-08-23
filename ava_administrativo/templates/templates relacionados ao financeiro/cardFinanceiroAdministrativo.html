@@ -1,0 +1,142 @@
+{% load humanize %}
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <h3 class="card-title" id="cardHeaderEditarDados">Financeiro</h3>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="accordion" id="accordion">
+      <div class="card card-success">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            <a class="d-block w-100" data-toggle="collapse" href="#collapse"> Lançar Parcela </a>
+          </h4>
+        </div>
+        <div id="collapse" class="collapse" data-parent="#accordion">
+          <div class="card-body">
+            <form id="cadastrarParcela">
+              <div class="form-group">
+                <label for="aluno" class="">Aluno: </label>
+                <select class="form-control" id="aluno" name="aluno">
+                  {% for aluno in alunos %}
+                  <option value="{{aluno.id}}">{{aluno.nome}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="curso" class="">Curso</label>
+                <select class="form-control" id="curso" name="curso">
+                  {% for curso in cursos %}
+                  <option value="{{curso.id}}">{{curso.nome}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="valorDaParcela" class="">Valor da parcela</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">R$</div>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="valorDaParcela"
+                    name="valorDaParcela"
+                    oninput="limitarCasasDecimais(this)"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="dataDeVencimento" class="">Data de Vencimento</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dataDeVencimento"
+                  name="dataDeVencimento"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="arquivo" class="">Boleto</label>
+                <input type="file" class="form-control-file" id="arquivo" name="arquivo" />
+              </div>
+
+              <div class="form-group">
+                <label for="pagamentoRealizado" class="">Parcela já foi paga</label>
+                <select class="form-control" id="pagamentoRealizado" name="pagamentoRealizado">
+                  <option value="sim">Sim</option>
+                  <option value="nao">Não</option>
+                </select>
+              </div>
+
+              <button
+                class="btn btn-sm btn-primary"
+                onclick="enviarParcela('{{urlEnviarParcela}}','{{csrf_token}}','{{urlCardFinanceiroAdministrativo}}')"
+                type="button"
+              >
+                Enviar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if parcelas is not None%}
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>Curso</th>
+          <th>Valor da Parcela</th>
+          <th>Data de Vencimento</th>
+          <th>Status do Pagamento</th>
+          <th>Boleto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for parcela in parcelas%}
+        <tr>
+          <td>{{parcela.aluno.nome}}</td>
+          <td>{{parcela.curso.nome}}</td>
+          <td>R${{parcela.valorDaParcela}}</td>
+          <td>{{parcela.dataDeVencimento|date:"d/m/Y"}}</td>
+          <td>
+            {% if parcela.pagamentoRealizado %}
+            <span class="badge badge-success">Pago</span>
+            {% else %} {% if parcela.parcelaVencida %}
+            <span class="badge badge-danger">Atrasado</span>
+            {% else %}
+            <span class="badge badge-warning">Pendente</span>
+            {% endif %} {% endif %}
+          </td>
+          <td>
+            <a href="{{parcela.boleto}}" target="_blank" class="btn btn-sm bg-gradient-info">
+              <b>Visualizar</b>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}Nenhuma parcela cadastrada no sistema{% endif %}
+  </div>
+</div>
+<script>
+  function limitarCasasDecimais(input, casasDecimais) {
+    input.value = input.value.replace(/[^0-9.]/g, "");
+
+    var partes = input.value.split(".");
+
+    if (partes.length > 1) {
+      partes[1] = partes[1].substring(0, 2);
+    }
+
+    input.value = partes.join(".");
+  }
+</script>

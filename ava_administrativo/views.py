@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, Material, MateriaDoCurso, BoletimDeDesempenhoDoAluno
+from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, Material, MateriaDoCurso, BoletimDeDesempenhoDoAluno, Parcela
 from ava.views import CardFinanceiro, CardBoletimDeDesempenho
 import json
 from django.http import JsonResponse
 from ava.util.util import gerarDadosBoletimDeDesempenhoDeUmAluno, gerarDadosFinanceirosDoAluno, dadosParaRenderizarAProvaRealizadaPeloAluno, CursosEmQueOAlunoEstaMatriculado, MateriasDeUmCurso
 from django.core.files.storage import FileSystemStorage
+from datetime import datetime
+from decimal import Decimal
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -23,6 +25,7 @@ def Dashboard(request):
         'urlCardGerenciarAlunos': '/card-gerenciar-alunos',
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
         'urlCardGerenciarMaterias': '/card-gerenciar-materias',
+        'urlCardFinanceiroAdministrativo': '/card-financeiro-administrativo',
     }
 
     return render(request, 'ava_administrativo.html', context)
@@ -453,3 +456,68 @@ def ExcluirProva(request):
     id = request.POST['id']
     Prova.objects.get(id=id).delete()
     return redirect('/')
+
+
+################################################################
+###### Views relacionadas ao financeiro do administrativo ######
+################################################################
+
+@login_required(login_url="/")
+def CardFinanceiroAdministrativo(request):
+    parcelas = Parcela.objects.all()
+    if parcelas == []:
+        parcelas = None
+
+    alunos = Aluno.objects.all()
+    if alunos == []:
+        alunos = None
+
+    cursos = Curso.objects.all()
+    if cursos == []:
+        cursos = None
+
+    context = {
+        'parcelas': parcelas.order_by('dataDeVencimento'),
+        'alunos': alunos,
+        'cursos': cursos,
+        'urlCardFinanceiroAdministrativo': '/card-financeiro-administrativo',
+        'urlEnviarParcela': '/enviar-parcela',
+    }
+    return render(request, 'templates relacionados ao financeiro/cardFinanceiroAdministrativo.html', context)
+
+
+@login_required(login_url="/")
+def EnviarParcela(request):
+    material = request.FILES['file']
+    fs1 = FileSystemStorage()
+    filename = fs1.save(material.name, material)
+    url = fs1.url(filename)
+
+    idAluno = int(request.POST['idAluno'])
+    aluno = Aluno.objects.get(id=idAluno)
+
+    idCurso = int(request.POST['idCurso'])
+    curso = Curso.objects.get(id=idCurso)
+
+    valorDaParcela = request.POST['valorDaParcela']
+    try:
+        valorDaParcela = Decimal(valorDaParcela)
+    except ValueError:
+        valorDaParcela = 0
+
+    dataDeVencimento = request.POST['dataDeVencimento']
+    dataDeVencimento = datetime.strptime(dataDeVencimento, '%Y-%m-%d').date()
+
+    if request.POST['pagamentoRealizado'] == "sim":
+        pagamentoRealizado = True
+    else:
+        pagamentoRealizado = False
+
+    parcela = Parcela.objects.create(aluno=aluno,
+                                     curso=curso,
+                                     valorDaParcela=valorDaParcela,
+                                     dataDeVencimento=dataDeVencimento,
+                                     pagamentoRealizado=pagamentoRealizado,
+                                     boleto=url)
+    parcela.save()
+    return redirect("/")

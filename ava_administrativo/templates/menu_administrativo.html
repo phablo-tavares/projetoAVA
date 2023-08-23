@@ -122,6 +122,17 @@
                   <p>Gerenciar Matérias</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a
+                  id="financeiro"
+                  href="#"
+                  class="nav-link"
+                  onclick="exibirCardFinanceiroAdministrativo('{{urlCardFinanceiroAdministrativo}}','{{csrf_token}}')"
+                >
+                  <i class="nav-icon fa fa-clipboard"></i>
+                  <p>Financeiro</p>
+                </a>
+              </li>
 
               <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -132,13 +143,6 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Editar Dados</p>
-                    </a>
-                  </li>
-
                   <li class="nav-item">
                     <a href="{% url 'Logout' %}" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>

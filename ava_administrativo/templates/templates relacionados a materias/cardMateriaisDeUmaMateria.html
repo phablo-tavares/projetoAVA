@@ -29,7 +29,7 @@
           </div>
           <button
             class="btn btn-sm btn-primary"
-            onclick="enviarMaterial('{{urlEnviarMaterial}}','{{csrf_token}}','{{materia.id}}')"
+            onclick="enviarMaterial('{{urlEnviarMaterial}}','{{csrf_token}}','{{materia.id}}','{{urlMateriaisDeUmaMateria}}')"
             type="button"
           >
             Enviar
@@ -42,23 +42,20 @@
     <table id="example2" class="table table-bordered table-hover">
       <thead>
         <tr>
-          <th>Nome do anexo</th>
-          <th>Link</th>
-          <th style="width: 8%"></th>
+          <th>Nome do Material</th>
+          <th style="width: 20%"></th>
         </tr>
       </thead>
       <tbody>
         {%for material in materiais %}
         <tr>
           <td>{{material.nomeDoMaterial}}</td>
-          <td>
-            <a target="_blank" href="{{material.anexo.url}}" class="link-primary"
-              >{{material.anexo.url}}</a
-            >
-          </td>
           <td
             class="d-flex justify-content-between border-top-0 border-left-0 border-right-0 {% if forloop.last %}border-bottom-0 {% endif %}"
           >
+            <a href="{{material.anexo}}" target="_blank" class="btn btn-sm bg-gradient-info">
+              <b>Visualizar</b>
+            </a>
             <button
               class="btn btn-sm btn-outline-danger"
               onclick="excluirUmMaterial('{{urlExcluirMaterial}}','{{csrf_token}}','{{material.id}}','{{materia.id}}','{{urlMateriaisDeUmaMateria}}')"

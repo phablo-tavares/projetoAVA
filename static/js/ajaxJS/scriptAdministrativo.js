@@ -375,8 +375,7 @@ function salvarEdicaoNaMateria(urlSalvarMateria, token, idDaMateria, urlCardGere
 }
 
 //prettier-ignore
-function enviarMaterial(urlEnviarMateiral, token,idMateria) {
-  console.log(urlEnviarMateiral);
+async function enviarMaterial(urlEnviarMateiral, token,idMateria,urlMateriaisDeUmaMateria) {
   let fileInput = document.getElementById("arquivo");
   let file = fileInput.files[0];
   var formData = new FormData();
@@ -390,6 +389,7 @@ function enviarMaterial(urlEnviarMateiral, token,idMateria) {
   xhr.onload = function() {
     if (xhr.status === 200) {
       console.log("Anexo enviado com sucesso!");
+      exibirCardMateriaisDeUmaMateria(urlMateriaisDeUmaMateria, token, idMateria);
     } else {
       console.error("Erro ao enviar anexo.");
     }
@@ -404,14 +404,14 @@ function adicioarMaisUmaQuestaoNaProva() {
 
   let questaoParaAdicionarNaProva = `
   <div class="row card card-secondary" id="Questao${quantidadeDeQuestoes}">
-    <div class="card-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3 class="card-title">Questão</h3>
+  <div class="card-header">
+  <div class="d-flex align-items-center justify-content-between">
+  <h3 class="card-title">Questão</h3>
         <button
           class="btn btn-sm btn-danger"
           onclick="removerQuestãoDaProva('${quantidadeDeQuestoes}')"
         >
-          Excluir Questão
+        Excluir Questão
         </button>
       </div>
     </div>
@@ -448,14 +448,14 @@ function adicioarMaisUmaQuestaoNaProva() {
         />
       </div>
       <div class="form-group">
-        <label for="alternativa3Questao${quantidadeDeQuestoes}">Alternativa 3</label>
-        <input
+      <label for="alternativa3Questao${quantidadeDeQuestoes}">Alternativa 3</label>
+      <input
           type="text"
           class="form-control form-control-sm"
           id="alternativa3Questao${quantidadeDeQuestoes}"
           name="alternativa3Questao${quantidadeDeQuestoes}"
           placeholder="Digite aqui a alternativa "
-        />
+          />
       </div>
       <div class="form-group">
         <label for="alternativa${quantidadeDeQuestoes}">Alternativa 4</label>
@@ -470,7 +470,7 @@ function adicioarMaisUmaQuestaoNaProva() {
       <div class="form-group">
         <label for="alternativaCorretaQuestao1">Alternativa Correta</label>
         <select
-          class="form-control form-control-sm"
+        class="form-control form-control-sm"
           name="alternativaCorretaQuestao${quantidadeDeQuestoes}"
           id="alternativaCorretaQuestao${quantidadeDeQuestoes}"
         >
@@ -479,9 +479,9 @@ function adicioarMaisUmaQuestaoNaProva() {
           <option>3</option>
           <option>4</option>
         </select>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
   `;
   $("#formProvaParaCadastrarNaMateria").append(questaoParaAdicionarNaProva);
 }
@@ -537,4 +537,43 @@ function excluirProva(urlExcluirProva, token, idProva, urlCardGerenciarMaterias)
       exibirCardGerenciarMaterias(urlCardGerenciarMaterias, token);
     }
   });
+}
+
+//
+// scripts relacionados ao financeiro administrativo
+//
+
+function exibirCardFinanceiroAdministrativo(urlCardFinanceiroAdministrativo, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(urlCardFinanceiroAdministrativo, token, 1);
+}
+
+function enviarParcela(urlEnviarParcela, token, urlCardFinanceiroAdministrativo) {
+  let fileInput = document.getElementById("arquivo");
+  let file = fileInput.files[0];
+  var formData = new FormData();
+  formData.append("file", file);
+
+  idAluno = $("#aluno").val();
+  idCurso = $("#curso").val();
+  valorDaParcela = $("#valorDaParcela").val();
+  dataDeVencimento = $("#dataDeVencimento").val();
+  pagamentoRealizado = $("#pagamentoRealizado").val();
+
+  formData.append("idAluno", idAluno);
+  formData.append("idCurso", idCurso);
+  formData.append("valorDaParcela", valorDaParcela);
+  formData.append("dataDeVencimento", dataDeVencimento);
+  formData.append("pagamentoRealizado", pagamentoRealizado);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", urlEnviarParcela, true); // Substitua pela URL correta da sua view do Django
+  xhr.setRequestHeader("X-CSRFToken", token);
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      exibirCardFinanceiroAdministrativo(urlCardFinanceiroAdministrativo, token);
+    } else {
+      console.error("Erro ao enviar anexo.");
+    }
+  };
+  xhr.send(formData);
 }
