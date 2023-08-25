@@ -4,6 +4,94 @@
   </div>
 
   <div class="card-body">
+    <div class="accordion" id="accordion">
+      <div class="card card-success">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            <a class="d-block w-100" data-toggle="collapse" href="#collapse">Cadastrar Aluno</a>
+          </h4>
+        </div>
+        <div id="collapse" class="collapse" data-parent="#accordion">
+          <div class="card-body">
+            <form id="cadastrarAluno">
+              <div class="form-group">
+                <label class="" for="nome">Nome Completo</label>
+                <input class="form-control" id="nome" name="nome" type="text" required />
+              </div>
+
+              <div class="form-group">
+                <label class="" for="cpf">CPF</label>
+                <input
+                  class="form-control"
+                  id="cpf"
+                  name="cpf"
+                  type="number"
+                  maxlength="11"
+                  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                  minlength="11"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="" for="rg">RG</label>
+                <input
+                  class="form-control"
+                  id="rg"
+                  name="rg"
+                  type="number"
+                  maxlength="7"
+                  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                  minlength="7"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="" for="email">Email</label>
+                <input class="form-control" id="email" name="email" type="email" required />
+              </div>
+
+              <div class="form-group">
+                <label class="" for="endereco">Endereço</label>
+                <input class="form-control" id="endereco" name="endereco" type="text" required />
+              </div>
+
+              <div class="form-group">
+                <label class="" for="sexo">Sexo</label>
+                <select class="form-control" name="sexo" id="sexo" required>
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                  <option value="O">Outro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="" for="nomeDeUsuario">Nome de usuário</label>
+                <input
+                  class="form-control"
+                  id="nomeDeUsuario"
+                  name="nomeDeUsuario"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="" for="senha">Senha</label>
+                <input class="form-control" id="senha" name="senha" type="password" required />
+              </div>
+              <button
+                class="btn btn-sm btn-primary"
+                onclick="cadastrarAluno('{{urlCadastrarAluno}}','{{csrf_token}}','{{urlCardGerenciarAlunos}}')"
+                type="button"
+              >
+                Cadastrar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {% if alunos is not None%}
     <table id="example2" class="table table-bordered table-hover">
       <thead>

@@ -124,6 +124,47 @@ function excluirAluno(urlExcluirAluno, token, idAluno, urlCardGerenciarAlunos) {
   });
 }
 
+function limparCamposFormularioDeCadastroDeAlunos() {
+  $("#nome").val("");
+  $("#cpf").val("");
+  $("#rg").val("");
+  $("#email").val("");
+  $("#endereco").val("");
+  $("#nomeDeUsuario").val("");
+  $("#senha").val("");
+}
+//prettier-ignore
+function cadastrarAluno(urlCadastrarAluno, token,urlCardGerenciarAlunos) {
+  let dadosAlunoSerializado = JSON.stringify($("#cadastrarAluno").serializeArray());
+
+  Swal.fire({
+    title: "Confirmar o cadastro de um novo aluno? ",
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlCadastrarAluno,
+        type: "post",
+        data: {
+          'dadosAlunoSerializado': dadosAlunoSerializado,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeAlunoCriado = JSON.parse(data);
+          await Swal.fire(`${nomeAlunoCriado} cadastrado no sistema!`, "", "success");
+          exibirCardGerenciarAlunos(urlCardGerenciarAlunos, token);
+        },
+        error: function(data){
+          Swal.fire(`${data.responseJSON['error']}`, "", "error");
+        }
+      });
+    }
+  });
+}
+
 //
 //scripts relacionados ao gerenciamento de cursos
 //

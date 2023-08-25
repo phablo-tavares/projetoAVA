@@ -9,6 +9,8 @@ from ava.util.util import gerarDadosBoletimDeDesempenhoDeUmAluno, gerarDadosFina
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 from decimal import Decimal
+from rest_framework import status
+from django.contrib.auth.hashers import make_password
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -50,8 +52,50 @@ def CardGerenciarAlunos(request):
         'urlCardVisualizarDadosDoAluno': '/card-visualizar-dados-do-aluno',
         'urlCardVisualizarDadosDoAluno': '/card-visualizar-dados-do-aluno',
         'urlCardEditarDadosPessoaisDeUmAluno': '/card-editar-dados-pessoais-de-um-aluno',
+        'urlCadastrarAluno': '/cadastrar-aluno',
     }
     return render(request, 'templates relacionados a alunos/cardGerenciarAlunos.html', context)
+
+
+@login_required(login_url="/")
+def CadastrarAluno(request):
+    dadosAlunoSerializado = json.loads(request.POST['dadosAlunoSerializado'])
+    aluno = Aluno()
+
+    for dado in dadosAlunoSerializado:
+        if dado['name'] == 'nome':
+            aluno.nome = dado['value']
+            userFirstName = dado['value']
+        if dado['name'] == 'cpf':
+            cpf = dado['value']
+            if Aluno.objects.filter(cpf=cpf).exists():
+                return JsonResponse({'error': f'Já existe aluno com o CPF {cpf}'},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            aluno.cpf = cpf
+        if dado['name'] == 'rg':
+            aluno.rg = dado['value']
+        if dado['name'] == 'email':
+            aluno.email = dado['value']
+            userEmail = dado['value']
+        if dado['name'] == 'endereco':
+            aluno.endereco = dado['value']
+        if dado['name'] == 'sexo':
+            aluno.sexo = dado['value']
+        if dado['name'] == 'nomeDeUsuario':
+            userName = dado['value']
+            if User.objects.filter(username=userName).exists():
+                return JsonResponse({'error': f'Nome de usuario {userName} indisponivel'},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if dado['name'] == 'senha':
+            userPassword = dado['value']
+
+    user = User.objects.create_user(
+        username=userName, password=userPassword, email=userEmail, first_name=userFirstName)
+    aluno.user = user
+    aluno.save()
+    user.save()
+
+    return JsonResponse(json.dumps(aluno.nome, indent=4, cls=CustomEncoder), safe=False)
 
 
 @login_required(login_url="/")
@@ -170,6 +214,7 @@ def ExcluirAluno(request):
     user = User.objects.get(id=aluno.user.id)
     aluno.delete()
     user.delete()
+    return redirect("/")
 
 
 #############################################

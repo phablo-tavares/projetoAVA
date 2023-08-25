@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 
-from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela, AlterarStatusDePagamentoParaPago, AlterarValorDaParcela, AlterarDataDeVencimento
+from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela, AlterarStatusDePagamentoParaPago, AlterarValorDaParcela, AlterarDataDeVencimento, CadastrarAluno
 
 urlpatterns = [
     path('ava_administrativo',  Dashboard),
@@ -14,6 +14,7 @@ urlpatterns = [
          CardEditarDadosPessoaisDeUmAluno),
     path('salvar-dados-pessoais-de-um-aluno', SalvarDadosPessoaisDeUmAluno),
     path('permitir-refazer-uma-prova', PermitirQueOAlunoRefacaUmaProva),
+    path('cadastrar-aluno',  CadastrarAluno),
 
 
     path('card-gerenciar-cursos',  CardGerenciarCursos),
