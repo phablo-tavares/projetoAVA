@@ -1,20 +1,22 @@
 <div class="card card-success">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      class="btn btn-dark btn-sm"
-      style="float: left"
-      onclick="voltarParaOGerenciamentoDeCursos('{{urlCardGerenciarCursos}}', '{{csrf_token}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title" id="cardHeaderEditarDados">Criar um novo curso</h3>
-    <button
-      class="btn btn-dark btn-sm"
-      style="float: right"
-      onclick="salvarNovoCurso('{{urlSalvarCurso}}','{{csrf_token}}','{{urlCardGerenciarCursos}}')"
-    >
-      Salvar
-    </button>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: left"
+        onclick="voltarParaOGerenciamentoDeCursos('{{urlCardGerenciarCursos}}', '{{csrf_token}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title" id="cardHeaderEditarDados">Criar um novo curso</h3>
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: right"
+        onclick="salvarNovoCurso('{{urlSalvarCurso}}','{{csrf_token}}','{{urlCardGerenciarCursos}}')"
+      >
+        Salvar
+      </button>
+    </div>
   </div>
 
   <div class="card-body">

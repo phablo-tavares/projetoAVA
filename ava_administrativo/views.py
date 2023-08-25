@@ -468,6 +468,19 @@ def CardFinanceiroAdministrativo(request):
     if parcelas == []:
         parcelas = None
 
+    qtdParcelasAtrasadas = 0
+    qtdParcelasPendentes = 0
+    qtdParcelasPagas = 0
+
+    for parcela in parcelas:
+        if parcela.pagamentoRealizado:
+            qtdParcelasPagas += 1
+        elif parcela.parcelaVencida:
+            qtdParcelasAtrasadas += 1
+            qtdParcelasPendentes += 1
+        else:
+            qtdParcelasPendentes += 1
+
     alunos = Aluno.objects.all()
     if alunos == []:
         alunos = None
@@ -480,8 +493,14 @@ def CardFinanceiroAdministrativo(request):
         'parcelas': parcelas.order_by('dataDeVencimento'),
         'alunos': alunos,
         'cursos': cursos,
+        'qtdParcelasAtrasadas': qtdParcelasAtrasadas,
+        'qtdParcelasPendentes': qtdParcelasPendentes,
+        'qtdParcelasPagas': qtdParcelasPagas,
         'urlCardFinanceiroAdministrativo': '/card-financeiro-administrativo',
         'urlEnviarParcela': '/enviar-parcela',
+        'urlAlterarStatusDePagamentoParaPago': '/alterar-status-de-pagamento-para-pago',
+        'urlAlterarValorDaParcela': '/alterar-valor-da-parcela',
+        'urlAlterarDataDeVencimento': '/alterar-data-de-vencimento',
     }
     return render(request, 'templates relacionados ao financeiro/cardFinanceiroAdministrativo.html', context)
 
@@ -519,5 +538,34 @@ def EnviarParcela(request):
                                      dataDeVencimento=dataDeVencimento,
                                      pagamentoRealizado=pagamentoRealizado,
                                      boleto=url)
+    parcela.save()
+    return redirect("/")
+
+
+@login_required(login_url="/")
+def AlterarStatusDePagamentoParaPago(request):
+    parcela = Parcela.objects.get(id=(request.POST['idParcela']))
+    parcela.pagamentoRealizado = True
+    parcela.save()
+    return redirect("/")
+
+
+@login_required(login_url="/")
+def AlterarValorDaParcela(request):
+    parcela = Parcela.objects.get(id=(request.POST['idParcela']))
+    try:
+        parcela.valorDaParcela = Decimal(request.POST['valorDaParcela'])
+    except:
+        pass
+    parcela.save()
+    return redirect("/")
+
+
+@login_required(login_url="/")
+def AlterarDataDeVencimento(request):
+    parcela = Parcela.objects.get(id=(request.POST['idParcela']))
+    dataDeVencimento = request.POST['dataDeVencimento']
+    dataDeVencimento = datetime.strptime(dataDeVencimento, '%Y-%m-%d').date()
+    parcela.dataDeVencimento = dataDeVencimento
     parcela.save()
     return redirect("/")

@@ -1,13 +1,15 @@
 {% if not provaRealizadaPeloAluno.finalizouAProva %}
 <div class="card card-dark">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      class="btn btn-secondary btn-sm"
-      onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-secondary btn-sm"
+        onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+    </div>
   </div>
 
   <div class="card-body">Aluno ainda não finalizou esta prova!</div>
@@ -15,14 +17,16 @@
 
 {%else%}
 <div class="card card-dark">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      class="btn btn-secondary btn-sm"
-      onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-secondary btn-sm"
+        onclick="visualizarDadosDoAluno('{{urlCardVisualizarDadosDoAluno}}','{{csrf_token}}','{{aluno.id}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+    </div>
   </div>
 
   <div class="card-body">

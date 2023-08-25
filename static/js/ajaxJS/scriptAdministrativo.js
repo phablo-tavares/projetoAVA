@@ -577,3 +577,132 @@ function enviarParcela(urlEnviarParcela, token, urlCardFinanceiroAdministrativo)
   };
   xhr.send(formData);
 }
+
+//prettier-ignore
+async function alterarStatus(urlAlterarStatusDePagamentoParaPago, token , idParcela) {
+  $.ajax({
+    url: urlAlterarStatusDePagamentoParaPago,
+    type: "post",
+    data: {
+      'idParcela': idParcela,
+    },
+    dataType: "json",
+    headers: { "X-CSRFToken": token },
+  });
+}
+function alterarStatusDePagamentoParaPago(
+  urlAlterarStatusDePagamentoParaPago,
+  token,
+  idParcela,
+  atrasadoParaPago
+) {
+  Swal.fire({
+    title: "Alterar o status de pagamento para Pago?",
+    showDenyButton: true,
+    confirmButtonText: "Sim",
+    denyButtonText: `Não`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await alterarStatus(urlAlterarStatusDePagamentoParaPago, token, idParcela);
+      Swal.fire("Status Alterado!", "", "success");
+      $(`#statusPagamentoParcela${idParcela}`).html(
+        '<span class="badge badge-success">Pago</span>'
+      );
+      let qtdParcelasAtrasadas = Number($("#qtdParcelasAtrasadas").text());
+      let qtdParcelasPendentes = Number($("#qtdParcelasPendentes").text());
+      let qtdParcelasPagas = Number($("#qtdParcelasPagas").text());
+      if (atrasadoParaPago) qtdParcelasAtrasadas--;
+      qtdParcelasPendentes--;
+      qtdParcelasPagas++;
+      $("#qtdParcelasAtrasadas").html(`${qtdParcelasAtrasadas}`);
+      $("#qtdParcelasPendentes").html(`${qtdParcelasPendentes}`);
+      $("#qtdParcelasPagas").html(`${qtdParcelasPagas}`);
+    }
+  });
+}
+
+//prettier-ignore
+async function ajaxAlterarValorParcela(urlAlterarValorDaParcela, token, idParcela,valorDaParcela){
+  $.ajax({
+    url: urlAlterarValorDaParcela,
+    type: "post",
+    data: {
+      'idParcela': idParcela,
+      'valorDaParcela': valorDaParcela,
+    },
+    dataType: "json",
+    headers: { "X-CSRFToken": token },
+  });
+}
+async function alterarValorDaParcela(urlAlterarValorDaParcela, token, idParcela) {
+  const { value: valorDaParcela } = await Swal.fire({
+    title: "Entre o novo valor da parcela",
+    input: "number",
+    inputLabel: "Valor",
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (!value) {
+        return "Nenhum valor informado!";
+      } else {
+        partes = value.split(".");
+        if (partes.length === 2 && partes[1].length > 2) {
+          return "O valor deve ter no maximo 2 casas decimais!";
+        }
+      }
+    },
+  });
+  if (valorDaParcela) {
+    await ajaxAlterarValorParcela(urlAlterarValorDaParcela, token, idParcela, valorDaParcela);
+    Swal.fire("Valor Alterado!", "", "success");
+    $(`#valorDaParcela${idParcela}`).html(`R$${valorDaParcela}`);
+  }
+}
+
+//prettier-ignore
+async function ajaxAlterarDataDeVencimento(urlAlterarDataDeVencimento, token, idParcela,dataDeVencimento){
+  $.ajax({
+    url: urlAlterarDataDeVencimento,
+    type: "post",
+    data: {
+      'idParcela': idParcela,
+      'dataDeVencimento': dataDeVencimento,
+    },
+    dataType: "json",
+    headers: { "X-CSRFToken": token },
+  });
+}
+async function alterarDataDeVencimento(urlAlterarDataDeVencimento, token, idParcela) {
+  const { value: dataDeVencimento } = await Swal.fire({
+    title: "Entre a nova data de Vencimento",
+    html: `
+    <div class="form-group">
+      <input
+        type="date"
+        class="form-control"
+        id="dataDeVencimentoNova"
+        name="dataDeVencimentoNova"
+      />
+    </div>
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    preConfirm: () => {
+      return document.getElementById("dataDeVencimentoNova").value;
+    },
+  });
+  if (dataDeVencimento) {
+    console.log(dataDeVencimento);
+    await ajaxAlterarDataDeVencimento(
+      urlAlterarDataDeVencimento,
+      token,
+      idParcela,
+      dataDeVencimento
+    );
+    Swal.fire("Data Alterada!", "", "success");
+    valores = dataDeVencimento.split("-");
+    ano = valores[0];
+    mes = valores[1];
+    dia = valores[2];
+    $(`#dataDeVencimento${idParcela}`).html(`${dia}/${mes}/${ano}`);
+  }
+}

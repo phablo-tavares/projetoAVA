@@ -1,19 +1,21 @@
 {% if not provaRealizadaPeloAluno.finalizouAProva %}
 <div class="card card-dark">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      class="btn btn-secondary btn-sm"
-      onclick="salvarProvaRealizada('{{prova.id}}','{{csrf_token}}','false') ; ToggleInformacoesAluno() ; exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
-    <button
-      class="btn btn-secondary btn-sm"
-      onclick="SwallfirefinalizarProva('{{prova.id}}','{{csrf_token}}','true','{{urlBoletimDeDesempenho}}')"
-    >
-      Finalizar Prova
-    </button>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-secondary btn-sm"
+        onclick="salvarProvaRealizada('{{prova.id}}','{{csrf_token}}','false') ; ToggleInformacoesAluno() ; exibirCardDosMateriaisDaMateria('{{urlMateriaisDaMateria}}','{{csrf_token}}','{{materia.id}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
+      <button
+        class="btn btn-secondary btn-sm"
+        onclick="SwallfirefinalizarProva('{{prova.id}}','{{csrf_token}}','true','{{urlBoletimDeDesempenho}}')"
+      >
+        Finalizar Prova
+      </button>
+    </div>
   </div>
 
   <div class="card-body">

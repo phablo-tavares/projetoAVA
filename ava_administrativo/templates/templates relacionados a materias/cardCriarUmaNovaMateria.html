@@ -1,20 +1,22 @@
 <div class="card card-success">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      class="btn btn-dark btn-sm"
-      style="float: left"
-      onclick="voltarParaOGerenciamentoDeMaterias('{{urlCardGerenciarMaterias}}', '{{csrf_token}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title" id="cardHeaderEditarDados">Criar uma nova matéria</h3>
-    <button
-      class="btn btn-dark btn-sm"
-      style="float: right"
-      onclick="salvarNovaMateria('{{urlSalvarMateria}}','{{csrf_token}}','{{urlCardGerenciarMaterias}}')"
-    >
-      Salvar
-    </button>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: left"
+        onclick="voltarParaOGerenciamentoDeMaterias('{{urlCardGerenciarMaterias}}', '{{csrf_token}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title" id="cardHeaderEditarDados">Criar uma nova matéria</h3>
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: right"
+        onclick="salvarNovaMateria('{{urlSalvarMateria}}','{{csrf_token}}','{{urlCardGerenciarMaterias}}')"
+      >
+        Salvar
+      </button>
+    </div>
   </div>
 
   <div class="card-body">

@@ -7,6 +7,52 @@
   </div>
 
   <div class="card-body">
+    <div class="row" id="informacoesAluno">
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="info-box">
+          <span class="info-box-icon bg-danger elevation-1"
+            ><ion-icon name="close-circle-outline" size="large"></ion-icon
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Parcelas Atrasadas</span>
+            <span class="info-box-number" id="qtdParcelasAtrasadas">{{qtdParcelasAtrasadas}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="info-box">
+          <span class="info-box-icon bg-info elevation-1"
+            ><ion-icon name="warning-outline" size="large"></ion-icon
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Parcelas a Receber</span>
+            <span class="info-box-number" id="qtdParcelasPendentes">{{qtdParcelasPendentes}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="info-box">
+          <span class="info-box-icon bg-success elevation-1"
+            ><ion-icon name="checkbox-outline" size="large"></ion-icon
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">Parcelas Pagas</span>
+            <span class="info-box-number" id="qtdParcelasPagas">{{qtdParcelasPagas}}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+    </div>
     <div class="accordion" id="accordion">
       <div class="card card-success">
         <div class="card-header">
@@ -95,7 +141,7 @@
           <th>Curso</th>
           <th>Valor da Parcela</th>
           <th>Data de Vencimento</th>
-          <th>Status do Pagamento</th>
+          <th>Status</th>
           <th>Boleto</th>
         </tr>
       </thead>
@@ -103,18 +149,51 @@
         {%for parcela in parcelas%}
         <tr>
           <td>{{parcela.aluno.nome}}</td>
+
           <td>{{parcela.curso.nome}}</td>
-          <td>R${{parcela.valorDaParcela}}</td>
-          <td>{{parcela.dataDeVencimento|date:"d/m/Y"}}</td>
-          <td>
+
+          <td
+            class="valorDaParcela"
+            id="valorDaParcela{{parcela.id}}"
+            style="cursor: pointer"
+            title="Alterar valor desta parcela"
+            onclick="alterarValorDaParcela('{{urlAlterarValorDaParcela}}','{{csrf_token}}','{{parcela.id}}')"
+          >
+            R${{parcela.valorDaParcela}}
+          </td>
+
+          <td
+            class="dataDeVencimento"
+            id="dataDeVencimento{{parcela.id}}"
+            style="cursor: pointer"
+            title="Alterar data de vencimento desta parcela"
+            onclick="alterarDataDeVencimento('{{urlAlterarDataDeVencimento}}','{{csrf_token}}','{{parcela.id}}')"
+          >
+            {{parcela.dataDeVencimento|date:"d/m/Y"}}
+          </td>
+
+          <td id="statusPagamentoParcela{{parcela.id}}">
             {% if parcela.pagamentoRealizado %}
             <span class="badge badge-success">Pago</span>
             {% else %} {% if parcela.parcelaVencida %}
-            <span class="badge badge-danger">Atrasado</span>
+            <span
+              class="badge badge-danger"
+              title="Clique para alterar o status para pago"
+              style="cursor: pointer"
+              onclick="alterarStatusDePagamentoParaPago('{{urlAlterarStatusDePagamentoParaPago}}','{{csrf_token}}','{{parcela.id}}',true)"
+              >Atrasado</span
+            >
             {% else %}
-            <span class="badge badge-warning">Pendente</span>
+            <span
+              class="badge badge-warning"
+              title="Clique para alterar o status para pago"
+              style="cursor: pointer"
+              onclick="alterarStatusDePagamentoParaPago('{{urlAlterarStatusDePagamentoParaPago}}','{{csrf_token}}','{{parcela.id}}',false)"
+              >Pendente</span
+            >
             {% endif %} {% endif %}
           </td>
+
           <td>
             <a href="{{parcela.boleto}}" target="_blank" class="btn btn-sm bg-gradient-info">
               <b>Visualizar</b>
@@ -127,16 +206,24 @@
     {% else %}Nenhuma parcela cadastrada no sistema{% endif %}
   </div>
 </div>
+
 <script>
   function limitarCasasDecimais(input, casasDecimais) {
     input.value = input.value.replace(/[^0-9.]/g, "");
-
     var partes = input.value.split(".");
-
     if (partes.length > 1) {
       partes[1] = partes[1].substring(0, 2);
     }
-
     input.value = partes.join(".");
   }
 </script>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<style>
+  .valorDaParcela:hover,
+  .dataDeVencimento:hover {
+    background-color: #ccc;
+  }
+</style>

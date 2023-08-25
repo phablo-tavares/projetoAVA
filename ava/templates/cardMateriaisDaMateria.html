@@ -1,13 +1,16 @@
 <div class="card card-dark">
-  <div class="card-header d-flex align-items-center justify-content-between">
-    <button
-      type="button"
-      class="btn btn-secondary btn-sm"
-      onclick="voltarDoMaterialParaAMateriaAtual('{{urlMateriasDoCurso}}','{{csrf_token}}')"
-    >
-      Voltar
-    </button>
-    <h3 class="card-title">Materiais - {{materia.nome}}</h3>
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm"
+        onclick="voltarDoMaterialParaAMateriaAtual('{{urlMateriasDoCurso}}','{{csrf_token}}')"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title">Materiais - {{materia.nome}}</h3>
+      <div></div>
+    </div>
   </div>
 
   <div class="card-body">

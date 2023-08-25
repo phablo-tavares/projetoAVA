@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 
-from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela
+from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela, AlterarStatusDePagamentoParaPago, AlterarValorDaParcela, AlterarDataDeVencimento
 
 urlpatterns = [
     path('ava_administrativo',  Dashboard),
@@ -37,6 +37,10 @@ urlpatterns = [
 
     path('card-financeiro-administrativo',  CardFinanceiroAdministrativo),
     path('enviar-parcela',  EnviarParcela),
+    path('alterar-status-de-pagamento-para-pago',
+         AlterarStatusDePagamentoParaPago),
+    path('alterar-valor-da-parcela', AlterarValorDaParcela),
+    path('alterar-data-de-vencimento', AlterarDataDeVencimento),
 
 
 ]
