@@ -583,7 +583,6 @@ function excluirProva(urlExcluirProva, token, idProva, urlCardGerenciarMaterias)
 //
 // scripts relacionados ao financeiro administrativo
 //
-
 function exibirCardFinanceiroAdministrativo(urlCardFinanceiroAdministrativo, token) {
   inserirCardNaPaginaPrincipalAdministrativo(urlCardFinanceiroAdministrativo, token, 1);
 }
@@ -712,7 +711,12 @@ async function ajaxAlterarDataDeVencimento(urlAlterarDataDeVencimento, token, id
     headers: { "X-CSRFToken": token },
   });
 }
-async function alterarDataDeVencimento(urlAlterarDataDeVencimento, token, idParcela) {
+async function alterarDataDeVencimento(
+  urlAlterarDataDeVencimento,
+  token,
+  idParcela,
+  urlCardFinanceiroAdministrativo
+) {
   const { value: dataDeVencimento } = await Swal.fire({
     title: "Entre a nova data de Vencimento",
     html: `
@@ -739,11 +743,74 @@ async function alterarDataDeVencimento(urlAlterarDataDeVencimento, token, idParc
       idParcela,
       dataDeVencimento
     );
-    Swal.fire("Data Alterada!", "", "success");
-    valores = dataDeVencimento.split("-");
-    ano = valores[0];
-    mes = valores[1];
-    dia = valores[2];
-    $(`#dataDeVencimento${idParcela}`).html(`${dia}/${mes}/${ano}`);
+    await Swal.fire("Data Alterada!", "", "success");
+    exibirCardGerenciarAlunos(urlCardFinanceiroAdministrativo, token);
+    // valores = dataDeVencimento.split("-");
+    // ano = valores[0];
+    // mes = valores[1];
+    // dia = valores[2];
+    // $(`#dataDeVencimento${idParcela}`).html(`${dia}/${mes}/${ano}`);
   }
+}
+
+//
+// scripts relacionados ao gerenciamento de notificações
+//
+function exibirCardGerenciarNotificacoes(urlGerenciarNotificacoes, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(urlGerenciarNotificacoes, token);
+}
+function exibirCardCriarUmaNovaNotificacao(urlCardCriarUmaNovaNotificacao, token) {
+  inserirCardNaPaginaPrincipalAdministrativo(urlCardCriarUmaNovaNotificacao, token);
+}
+function exibirCardEditarNotificacao(urlCardEditarNotificacao, token, idAluno) {
+  inserirCardNaPaginaPrincipalAdministrativo(urlCardEditarNotificacao, token, idAluno);
+}
+function exibirNotificacao(notificacao) {
+  Swal.fire(`${notificacao}`);
+}
+//prettier-ignore
+function excluirNotificacaoAluno(urlExcluirNotificacaoAluno, token, idAluno, urlCardGerenciarNotificacoes) {
+  Swal.fire({
+    title: "Tem certeza que deseja excluir a notificação? Operação Irreversível",
+    showDenyButton: true,
+    confirmButtonText: "Sim",
+    denyButtonText: `Não`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deletarRegistro(urlExcluirNotificacaoAluno, token, idAluno);
+      await Swal.fire("Notificação excluida do sistema!", "", "success");
+      exibirCardGerenciarNotificacoes(urlCardGerenciarNotificacoes, token);
+    }
+  });
+}
+//prettier-ignore
+function salvarNotificacao(urlSalvarNotificacao, token, urlCardGerenciarNotificacoes) {
+  let dadosNotificacaoSerializado = $("#formNotificacao").serializeArray();
+  dadosNotificacaoSerializado = JSON.stringify(dadosNotificacaoSerializado);
+  let idAlunoParaCriarNotificacao = $("#idAlunoParaCriarNotificacao").val()
+
+  Swal.fire({
+    title: `Salvar notificação?`,
+    showCancelButton: true,
+    confirmButtonText: "Sim",
+    cancelButtonText: `Não`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlSalvarNotificacao,
+        type: "post",
+        data: {
+          'dadosNotificacaoSerializado': dadosNotificacaoSerializado,
+          'idAlunoParaCriarNotificacao': idAlunoParaCriarNotificacao,
+        },
+        dataType: "json",
+        headers: { "X-CSRFToken": token },
+        success: async function (data) {
+          nomeAluno = JSON.parse(data);
+          await Swal.fire(`Notificação salvada com sucesso!`, "", "success");
+          exibirCardGerenciarNotificacoes(urlCardGerenciarNotificacoes, token);
+        },
+      });
+    }
+  });
 }

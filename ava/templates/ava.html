@@ -1,5 +1,7 @@
 {% extends "menu.html" %} {% block content %}{% load static %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -62,7 +64,10 @@
         <div class="col-12" id="alertaPagamentoVencido">
           <div class="alert alert-warning alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <h5><i class="icon fas fa-exclamation-triangle"></i> Pagamento</h5>
+            <h5 class="d-flex justify-content-start align-items-center">
+              <ion-icon name="card-outline" size="large" class="mr-2"></ion-icon>
+              <div>Pagamento</div>
+            </h5>
             Caro aluno, você possui pagamentos em aberto! consulte a aba financeiro ao lado para
             saber mais.
           </div>
@@ -70,6 +75,21 @@
         </div>
         {% endif %}
         <!-- /.col -->
+
+        {% if aluno.notificacao is not None %}
+        <div class="col-12" id="notificacaoDoSistema">
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5 class="d-flex justify-content-start align-items-center">
+              <ion-icon name="information-circle-outline" size="large" class="mr-2"></ion-icon>
+              <div>Notificação do Sistema</div>
+            </h5>
+            {{aluno.notificacao}}
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        {% endif %}
       </div>
 
       <!-- /.row -->

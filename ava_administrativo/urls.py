@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 
-from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela, AlterarStatusDePagamentoParaPago, AlterarValorDaParcela, AlterarDataDeVencimento, CadastrarAluno
+from ava_administrativo.views import Dashboard, CardGerenciarAlunos, CardGerenciarCursos, ExcluirAluno, CardVisualizarDadosDoAluno, CardProvaAdministrativo, CardEditarDadosPessoaisDeUmAluno, SalvarDadosPessoaisDeUmAluno, PermitirQueOAlunoRefacaUmaProva, CardCriarUmNovoCurso, SalvarCurso, ExcluirCurso, CardEditarDadosDeUmCurso, CardGerenciarMaterias, CardCriarUmaNovaMateria, SalvarMateria, ExcluirMateria, CardEditarDadosDeUmaMateria, CardMateriaisDeUmaMateria, ExcluirMaterial, SalvarMaterial, CardCadastrarProva, CriarProva, cardVisualizarProva, ExcluirProva, CardFinanceiroAdministrativo, EnviarParcela, AlterarStatusDePagamentoParaPago, AlterarValorDaParcela, AlterarDataDeVencimento, CadastrarAluno, CardGerenciarNotificacoes, ExcluirNotificacaoAluno, CardCriarUmaNovaNotificacao, SalvarNotificacao, CardEditarNotificacao
 
 urlpatterns = [
     path('ava_administrativo',  Dashboard),
@@ -43,5 +43,10 @@ urlpatterns = [
     path('alterar-valor-da-parcela', AlterarValorDaParcela),
     path('alterar-data-de-vencimento', AlterarDataDeVencimento),
 
+    path('card-gerenciar-notificacoes', CardGerenciarNotificacoes),
+    path('card-criar-nova-notificacao', CardCriarUmaNovaNotificacao),
+    path('card-editar-notificacao', CardEditarNotificacao),
+    path('salvar-notificacao', SalvarNotificacao),
+    path('excluir-notificacao',  ExcluirNotificacaoAluno),
 
 ]

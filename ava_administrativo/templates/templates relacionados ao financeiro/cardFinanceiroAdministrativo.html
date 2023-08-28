@@ -167,7 +167,7 @@
             id="dataDeVencimento{{parcela.id}}"
             style="cursor: pointer"
             title="Alterar data de vencimento desta parcela"
-            onclick="alterarDataDeVencimento('{{urlAlterarDataDeVencimento}}','{{csrf_token}}','{{parcela.id}}')"
+            onclick="alterarDataDeVencimento('{{urlAlterarDataDeVencimento}}','{{csrf_token}}','{{parcela.id}}','{{urlCardFinanceiroAdministrativo}}')"
           >
             {{parcela.dataDeVencimento|date:"d/m/Y"}}
           </td>

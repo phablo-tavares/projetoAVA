@@ -1,0 +1,68 @@
+{% if existemAlunosNoSistema %}
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <h3 class="card-title d-flex align-items-center">Gerenciar Notificações</h3>
+      <button
+        class="btn btn-sm btn-success"
+        onclick="exibirCardCriarUmaNovaNotificacao('{{urlCardCriarUmaNovaNotificacao}}','{{csrf_token}}')"
+      >
+        Criar uma nova notificação
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% if alunosQuePossuemNotificacao is not None%}
+    <table id="example2" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Nome do Aluno</th>
+          <th style="width: 25%">Notificação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%for aluno in alunosQuePossuemNotificacao %}
+        <tr>
+          <td>{{aluno.nome}}</td>
+          <td
+            class="d-flex justify-content-between border-top-0 border-left-0 border-right-0 {% if forloop.last %}border-bottom-0 {% endif %}"
+          >
+            <button
+              class="btn btn-sm btn-outline-success"
+              onclick="exibirNotificacao('{{aluno.notificacao}}')"
+            >
+              Visualizar
+            </button>
+            <button
+              class="btn btn-sm btn-outline-info"
+              onclick="exibirCardEditarNotificacao('{{urlCardEditarNotificacao}}','{{csrf_token}}','{{aluno.id}}')"
+            >
+              Editar
+            </button>
+            <button
+              class="btn btn-sm btn-outline-danger"
+              onclick="excluirNotificacaoAluno('{{urlExcluirNotificacaoAluno}}','{{csrf_token}}','{{aluno.id}}','{{urlCardGerenciarNotificacoes}}')"
+            >
+              Excluir
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %} Nenhuma notificação cadastrada no sistema. {% endif %}
+  </div>
+</div>
+
+{% else %}
+<div class="card card-dark">
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <h3 class="card-title d-flex align-items-center">Gerenciar Notificações</h3>
+    </div>
+  </div>
+
+  <div class="card-body">Nenhum aluno cadastrado no sistema</div>
+</div>
+{% endif %}

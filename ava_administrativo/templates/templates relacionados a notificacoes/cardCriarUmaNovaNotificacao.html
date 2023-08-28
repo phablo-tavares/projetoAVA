@@ -1,0 +1,71 @@
+{% if alunosQueNaoPossuemNotificacao is not None %}
+<div class="card card-success">
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: left"
+        onclick="exibirCardGerenciarNotificacoes('{{urlCardGerenciarNotificacoes}}', '{{csrf_token}}');"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title" id="cardHeaderEditarDados">Criar uma Notificação</h3>
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: right"
+        onclick="salvarNotificacao('{{urlSalvarNotificacao}}','{{csrf_token}}','{{urlCardGerenciarNotificacoes}}')"
+      >
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form id="formNotificacao">
+      <div class="form-group">
+        <label for="idAlunoParaCriarNotificacao">Aluno</label>
+        <select
+          class="form-control"
+          id="idAlunoParaCriarNotificacao"
+          name="idAlunoParaCriarNotificacao"
+        >
+          {% for aluno in alunosQueNaoPossuemNotificacao %}
+          <option value="{{aluno.id}}">{{aluno.nome}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="notificacao">Digite aqui a notificação para o aluno</label>
+        <textarea
+          type="text"
+          class="form-control"
+          id="notificacao"
+          name="notificacao"
+          maxlength="510"
+          oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        ></textarea>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<div class="card card-success">
+  <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <button
+        class="btn btn-dark btn-sm"
+        style="float: left"
+        onclick="exibirCardGerenciarNotificacoes('{{urlCardGerenciarNotificacoes}}', '{{csrf_token}}');"
+      >
+        Voltar
+      </button>
+      <h3 class="card-title" id="cardHeaderEditarDados">Criar uma Notificação</h3>
+      <div></div>
+    </div>
+  </div>
+
+  <div class="card-body">Todos alunos já possuem notificação.</div>
+</div>
+{% endif %}

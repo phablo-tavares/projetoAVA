@@ -65,6 +65,8 @@
                   <option value="O">Outro</option>
                 </select>
               </div>
+
+              <hr />
               <div class="form-group">
                 <label class="" for="nomeDeUsuario">Nome de usuário</label>
                 <input
@@ -79,8 +81,9 @@
                 <label class="" for="senha">Senha</label>
                 <input class="form-control" id="senha" name="senha" type="password" required />
               </div>
+
               <button
-                class="btn btn-sm btn-primary"
+                class="btn btn-primary"
                 onclick="cadastrarAluno('{{urlCadastrarAluno}}','{{csrf_token}}','{{urlCardGerenciarAlunos}}')"
                 type="button"
               >

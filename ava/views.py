@@ -30,6 +30,9 @@ def Dashboard(request):
     if Parcela.objects.filter(aluno=aluno, dataDeVencimento__gt=data_atual).exists():
         aluno.possuiParcelaVencida = True
 
+    if aluno.notificacao is "":
+        aluno.notificacao = None
+
     context = {
         'aluno': aluno,
         'urlBoletimDeDesempenho': "/card-boletim-de-desempenho",

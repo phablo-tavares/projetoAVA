@@ -28,6 +28,7 @@ def Dashboard(request):
         'urlCardGerenciarCursos': '/card-gerenciar-cursos',
         'urlCardGerenciarMaterias': '/card-gerenciar-materias',
         'urlCardFinanceiroAdministrativo': '/card-financeiro-administrativo',
+        'urlCardGerenciarNotificacoes': '/card-gerenciar-notificacoes',
     }
 
     return render(request, 'ava_administrativo.html', context)
@@ -510,7 +511,7 @@ def ExcluirProva(request):
 @login_required(login_url="/")
 def CardFinanceiroAdministrativo(request):
     parcelas = Parcela.objects.all()
-    if parcelas == []:
+    if len(parcelas) == 0:
         parcelas = None
 
     qtdParcelasAtrasadas = 0
@@ -527,11 +528,11 @@ def CardFinanceiroAdministrativo(request):
             qtdParcelasPendentes += 1
 
     alunos = Aluno.objects.all()
-    if alunos == []:
+    if len(alunos) == 0:
         alunos = None
 
     cursos = Curso.objects.all()
-    if cursos == []:
+    if len(cursos) == 0:
         cursos = None
 
     context = {
@@ -614,3 +615,84 @@ def AlterarDataDeVencimento(request):
     parcela.dataDeVencimento = dataDeVencimento
     parcela.save()
     return redirect("/")
+
+
+################################################################
+############## Views relacionadas a notificações ###############
+################################################################
+
+@login_required(login_url="/")
+def CardGerenciarNotificacoes(request):
+    if Aluno.objects.exists():
+        existemAlunosNoSistema = True
+        alunosQuePossuemNotificacao = Aluno.objects.exclude(notificacao="").values(
+            "id", "nome", "notificacao")
+        if len(alunosQuePossuemNotificacao) == 0:
+            alunosQuePossuemNotificacao = None
+    else:
+        alunosQuePossuemNotificacao = None
+        existemAlunosNoSistema = False
+
+    context = {
+        'alunosQuePossuemNotificacao': alunosQuePossuemNotificacao,
+        'existemAlunosNoSistema': existemAlunosNoSistema,
+        'urlCardGerenciarNotificacoes': '/card-gerenciar-notificacoes',
+        'urlExcluirNotificacaoAluno': '/excluir-notificacao',
+        'urlCardCriarUmaNovaNotificacao': '/card-criar-nova-notificacao',
+        'urlCardEditarNotificacao': '/card-editar-notificacao',
+    }
+    return render(request, 'templates relacionados a notificacoes/cardGerenciarNotificacoes.html', context)
+
+
+@login_required(login_url="/")
+def CardEditarNotificacao(request):
+    idAluno = int(request.GET['id'])
+    aluno = Aluno.objects.filter(id=idAluno).values(
+        "id", "nome", "notificacao")
+    context = {
+        'aluno': aluno,
+        'urlCardGerenciarNotificacoes': '/card-gerenciar-notificacoes',
+        'urlSalvarNotificacao': '/salvar-notificacao',
+    }
+    return render(request, 'templates relacionados a notificacoes/cardEditarUmaNotificacao.html', context)
+
+
+@login_required(login_url="/")
+def CardCriarUmaNovaNotificacao(request):
+    alunosQueNaoPossuemNotificacao = Aluno.objects.filter(notificacao="").values(
+        "id", "nome", "notificacao")
+    if len(alunosQueNaoPossuemNotificacao) == 0:
+        alunosQueNaoPossuemNotificacao = None
+    context = {
+        'alunosQueNaoPossuemNotificacao': alunosQueNaoPossuemNotificacao,
+        'urlCardGerenciarNotificacoes': '/card-gerenciar-notificacoes',
+        'urlSalvarNotificacao': '/salvar-notificacao',
+    }
+    return render(request, 'templates relacionados a notificacoes/cardCriarUmaNovaNotificacao.html', context)
+
+
+@login_required(login_url="/")
+def SalvarNotificacao(request):
+    idAluno = request.POST['idAlunoParaCriarNotificacao']
+    aluno = Aluno.objects.get(id=idAluno)
+    notificacao = None
+
+    dadosNotificacaoSerializado = json.loads(
+        request.POST['dadosNotificacaoSerializado'])
+
+    for dado in dadosNotificacaoSerializado:
+        if dado['name'] == 'notificacao':
+            notificacao = dado['value']
+            aluno.notificacao = notificacao
+            aluno.save()
+
+    return JsonResponse(json.dumps(aluno.nome, indent=4, cls=CustomEncoder), safe=False)
+
+
+@login_required(login_url="/")
+def ExcluirNotificacaoAluno(request):
+    id = request.POST['id']
+    aluno = Aluno.objects.get(id=id)
+    aluno.notificacao = ""
+    aluno.save()
+    return redirect('/')
