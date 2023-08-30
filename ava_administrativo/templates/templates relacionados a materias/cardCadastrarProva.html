@@ -9,16 +9,17 @@
         Voltar
       </button>
       <h3 class="card-title d-flex align-items-center">Cadastrar prova - {{materia.nome}}</h3>
-      <button
-        class="btn btn-sm btn-success"
-        onclick="criarProva('{{urlCriarProva}}', '{{csrf_token}}', '{{materia.id}}', '{{urlCardGerenciarMaterias}}','{{materia.nome}}')"
-      >
-        Salvar Prova
-      </button>
+      <div></div>
     </div>
   </div>
   <div class="card-body">
-    <form id="formProvaParaCadastrarNaMateria">
+    <form
+      id="formProvaParaCadastrarNaMateria"
+      onsubmit="criarProva('{{urlCriarProva}}', '{{csrf_token}}', '{{materia.id}}', '{{urlCardGerenciarMaterias}}','{{materia.nome}}') ; return false"
+    >
+      <button class="btn btn-sm btn-success ml-4" style="float: right" type="submit">
+        Salvar Prova
+      </button>
       <div class="form-group row">
         <label for="nomeDaProva" class="col">Nome da Prova</label>
         <input
@@ -28,6 +29,7 @@
           id="nomeDaProva"
           name="nomeDaProva"
           placeholder="Informe o nome desta prova."
+          required
         />
       </div>
       <div class="row card card-secondary" id="Questao1">
@@ -46,6 +48,7 @@
               name="enunciadoQuestao1"
               placeholder="Digite aqui o enunciado da questão"
               style="max-height: 100px"
+              required
             ></textarea>
           </div>
           <div class="form-group">
@@ -56,6 +59,7 @@
               id="alternativa1Questao1"
               name="alternativa1Questao1"
               placeholder="Digite aqui a alternativa "
+              required
             />
           </div>
           <div class="form-group">
@@ -66,6 +70,7 @@
               id="alternativa2Questao1"
               name="alternativa2Questao1"
               placeholder="Digite aqui a alternativa "
+              required
             />
           </div>
           <div class="form-group">
@@ -76,6 +81,7 @@
               id="alternativa3Questao1"
               name="alternativa3Questao1"
               placeholder="Digite aqui a alternativa "
+              required
             />
           </div>
           <div class="form-group">
@@ -86,6 +92,7 @@
               id="alternativa4Questao1"
               name="alternativa4Questao1"
               placeholder="Digite aqui a alternativa "
+              required
             />
           </div>
           <div class="form-group">
@@ -94,6 +101,7 @@
               class="form-control form-control-sm"
               name="alternativaCorretaQuestao1"
               id="alternativaCorretaQuestao1"
+              required
             >
               <option>1</option>
               <option>2</option>

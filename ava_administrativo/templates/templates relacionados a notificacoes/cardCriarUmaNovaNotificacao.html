@@ -10,24 +10,22 @@
         Voltar
       </button>
       <h3 class="card-title" id="cardHeaderEditarDados">Criar uma Notificação</h3>
-      <button
-        class="btn btn-dark btn-sm"
-        style="float: right"
-        onclick="salvarNotificacao('{{urlSalvarNotificacao}}','{{csrf_token}}','{{urlCardGerenciarNotificacoes}}')"
-      >
-        Salvar
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
-    <form id="formNotificacao">
+    <form
+      id="formNotificacao"
+      onsubmit="salvarNotificacao('{{urlSalvarNotificacao}}','{{csrf_token}}','{{urlCardGerenciarNotificacoes}}') ; return false"
+    >
       <div class="form-group">
         <label for="idAlunoParaCriarNotificacao">Aluno</label>
         <select
           class="form-control"
           id="idAlunoParaCriarNotificacao"
           name="idAlunoParaCriarNotificacao"
+          required
         >
           {% for aluno in alunosQueNaoPossuemNotificacao %}
           <option value="{{aluno.id}}">{{aluno.nome}}</option>
@@ -44,8 +42,10 @@
           name="notificacao"
           maxlength="510"
           oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          required
         ></textarea>
       </div>
+      <button class="btn btn-success btn-sm" type="submit">Salvar</button>
     </form>
   </div>
 </div>

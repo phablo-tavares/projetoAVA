@@ -17,7 +17,10 @@
     <div class="card card-success">
       <div class="card-header">Cadastrar Material</div>
       <div class="card-body">
-        <form id="cadastrarMaterial">
+        <form
+          id="cadastrarMaterial"
+          onsubmit="enviarMaterial('{{urlEnviarMaterial}}','{{csrf_token}}','{{materia.id}}','{{urlMateriaisDeUmaMateria}}') ; return false"
+        >
           <div class="form-group row">
             <label for="arquivo" class="col col-4">Escolha um arquivo para adicionar:</label>
             <input
@@ -25,15 +28,10 @@
               class="form-control-file form-control-sm col"
               id="arquivo"
               name="arquivo"
+              required
             />
           </div>
-          <button
-            class="btn btn-sm btn-primary"
-            onclick="enviarMaterial('{{urlEnviarMaterial}}','{{csrf_token}}','{{materia.id}}','{{urlMateriaisDeUmaMateria}}')"
-            type="button"
-          >
-            Enviar
-          </button>
+          <button class="btn btn-sm btn-primary" type="submit">Enviar</button>
         </form>
       </div>
     </div>

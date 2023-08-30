@@ -12,18 +12,15 @@
       <h3 class="card-title" id="cardHeaderEditarDados">
         Editar Notificação do aluno {{aluno.nome}}
       </h3>
-      <button
-        class="btn btn-dark btn-sm"
-        style="float: right"
-        onclick="salvarNotificacao('{{urlSalvarNotificacao}}','{{csrf_token}}','{{urlCardGerenciarNotificacoes}}')"
-      >
-        Salvar
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
-    <form id="formNotificacao">
+    <form
+      id="formNotificacao"
+      onsubmit="salvarNotificacao('{{urlSalvarNotificacao}}','{{csrf_token}}','{{urlCardGerenciarNotificacoes}}') ; return false"
+    >
       <input type="hidden" value="{{aluno.id}}" id="idAlunoParaCriarNotificacao" />
 
       <div class="form-group">
@@ -35,10 +32,12 @@
           name="notificacao"
           maxlength="510"
           oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          required
         >
 {{aluno.notificacao}}</textarea
         >
       </div>
+      <button class="btn btn-info btn-sm" type="submit">Salvar</button>
     </form>
   </div>
 </div>

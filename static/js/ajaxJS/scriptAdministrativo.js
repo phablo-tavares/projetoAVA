@@ -2,6 +2,11 @@ $(document).ready(function () {
   let url = "/card-gerenciar-alunos";
   let token = $("#token").val();
   exibirCardGerenciarAlunos(url, token);
+
+  $(".nav-link").click(function () {
+    $(".nav-link").removeClass("active");
+    $(this).addClass("active");
+  });
 });
 function insertDataInsideTag(tagSelector, content) {
   $(tagSelector).html(content);
@@ -124,15 +129,6 @@ function excluirAluno(urlExcluirAluno, token, idAluno, urlCardGerenciarAlunos) {
   });
 }
 
-function limparCamposFormularioDeCadastroDeAlunos() {
-  $("#nome").val("");
-  $("#cpf").val("");
-  $("#rg").val("");
-  $("#email").val("");
-  $("#endereco").val("");
-  $("#nomeDeUsuario").val("");
-  $("#senha").val("");
-}
 //prettier-ignore
 function cadastrarAluno(urlCadastrarAluno, token,urlCardGerenciarAlunos) {
   let dadosAlunoSerializado = JSON.stringify($("#cadastrarAluno").serializeArray());
@@ -370,7 +366,7 @@ function excluirUmMaterial(
   }).then(async (result) => {
     if (result.isConfirmed) {
       await deletarRegistro(urlExcluirMaterial, token, idMaterial);
-      await Swal.fire("Matéria excluida do sistema!", "", "success");
+      await Swal.fire("Material excluido do sistema!", "", "success");
       exibirCardMateriaisDeUmaMateria(urlMateriaisDeUmaMateria, token, idMateria);
     }
   });
@@ -424,7 +420,7 @@ async function enviarMaterial(urlEnviarMateiral, token,idMateria,urlMateriaisDeU
   formData.append("idMateria", idMateria);
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", urlEnviarMateiral, true); // Substitua pela URL correta da sua view do Django
+  xhr.open("POST", urlEnviarMateiral, true); 
   xhr.setRequestHeader("X-CSRFToken", token);
   console.log('teste')
   xhr.onload = function() {
@@ -466,6 +462,7 @@ function adicioarMaisUmaQuestaoNaProva() {
           name="enunciadoQuestao${quantidadeDeQuestoes}"
           placeholder="Digite aqui o enunciado da questão"
           style="max-height: 100px"
+          required
         ></textarea>
       </div>
       <div class="form-group">
@@ -476,6 +473,7 @@ function adicioarMaisUmaQuestaoNaProva() {
           id="alternativa1Questao${quantidadeDeQuestoes}"
           name="alternativa1Questao${quantidadeDeQuestoes}"
           placeholder="Digite aqui a alternativa "
+          required
         />
       </div>
       <div class="form-group">
@@ -486,6 +484,7 @@ function adicioarMaisUmaQuestaoNaProva() {
           id="alternativa2Questao${quantidadeDeQuestoes}"
           name="alternativa2Questao${quantidadeDeQuestoes}"
           placeholder="Digite aqui a alternativa "
+          required
         />
       </div>
       <div class="form-group">
@@ -496,6 +495,7 @@ function adicioarMaisUmaQuestaoNaProva() {
           id="alternativa3Questao${quantidadeDeQuestoes}"
           name="alternativa3Questao${quantidadeDeQuestoes}"
           placeholder="Digite aqui a alternativa "
+          required
           />
       </div>
       <div class="form-group">
@@ -506,6 +506,7 @@ function adicioarMaisUmaQuestaoNaProva() {
           id="alternativa4Questao${quantidadeDeQuestoes}"
           name="alternativa4Questao${quantidadeDeQuestoes}"
           placeholder="Digite aqui a alternativa "
+          required
         />
       </div>
       <div class="form-group">
@@ -514,6 +515,7 @@ function adicioarMaisUmaQuestaoNaProva() {
         class="form-control form-control-sm"
           name="alternativaCorretaQuestao${quantidadeDeQuestoes}"
           id="alternativaCorretaQuestao${quantidadeDeQuestoes}"
+          required
         >
           <option>1</option>
           <option>2</option>
@@ -535,12 +537,12 @@ function removerQuestãoDaProva(id) {
 }
 
 //prettier-ignore
-function criarProva(urlCriarProva, token, idDaMateria,urlCardGerenciarMaterias , nomeDaMateria) {
+function criarProva(urlCriarProva, token, idDaMateria,urlCardGerenciarMaterias) {
   let dadosProvaSerializado = $("#formProvaParaCadastrarNaMateria").serializeArray();
   dadosProvaSerializado = JSON.stringify(dadosProvaSerializado);
 
   Swal.fire({
-    title: `Confirmar a criação desta prova na matéria ${nomeDaMateria}`,
+    title: `Confirmar a criação desta prova?`,
     showCancelButton: true,
     confirmButtonText: "Sim",
     cancelButtonText: `Não`,
@@ -812,5 +814,49 @@ function salvarNotificacao(urlSalvarNotificacao, token, urlCardGerenciarNotifica
         },
       });
     }
+  });
+}
+
+//prettier-ignore
+function alterarCursos(token) {
+  idAluno = Number($("#aluno").val());
+
+  $.ajax({
+    url: "/alterar-curso",
+    type: "get",
+    data: {
+      'idAluno': idAluno,
+    },
+    dataType: "json",
+    headers: { "X-CSRFToken": token },
+    success: function (data) {
+      cursosNovos = JSON.parse(data);
+      if (cursosNovos === null){
+        let inserir = `
+        <div class="form-group">
+          <label for="curso" class="">Curso</label>
+          <select class="form-control" id="curso" name="curso" disabled required>
+            <option value="">Este aluno não está matriculado em nenhum curso</option>
+          </select>
+        </div>
+        `
+        $("#containerSelectCursos").html(inserir)
+      }
+      else{
+        let options = ''
+        for(let i = 0 ; i < cursosNovos.length ; i++){
+          options += `<option value="${cursosNovos[i].id}">${cursosNovos[i].nome}</option>`
+        }
+        inserir = `
+        <div class="form-group">
+          <label for="curso" class="">Curso</label>
+          <select class="form-control" id="curso" name="curso" required>
+            ${options}
+          </select>
+        </div>
+        `
+        $("#containerSelectCursos").html(inserir)
+      }
+    },
   });
 }

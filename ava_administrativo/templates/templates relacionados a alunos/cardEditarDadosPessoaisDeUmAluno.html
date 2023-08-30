@@ -9,18 +9,15 @@
         Voltar
       </button>
       <h3 class="card-title" id="cardHeaderEditarDados">Editar Dados Pessoais - {{aluno.nome}}</h3>
-      <button
-        class="btn btn-secondary btn-sm"
-        style="float: right"
-        onclick="salvarEdicaoDeUmAluno('{{urlSalvarEdicaoEmUmAluno}}', '{{csrf_token}}','{{aluno.id}}')"
-      >
-        Salvar Edição
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
-    <form action="" method="post" id="dadosPessoaisDoAlunoAdministrativo">
+    <form
+      id="dadosPessoaisDoAlunoAdministrativo"
+      onsubmit="salvarEdicaoDeUmAluno('{{urlSalvarEdicaoEmUmAluno}}', '{{csrf_token}}','{{aluno.id}}') ; return false"
+    >
       <div class="form-group">
         <label class="" for="nome">Nome</label>
         <input
@@ -95,6 +92,7 @@
           <option value="O">Outro</option>
         </select>
       </div>
+      <button class="btn btn-info btn-sm mt-4" type="submit">Salvar Edição</button>
     </form>
   </div>
 </div>

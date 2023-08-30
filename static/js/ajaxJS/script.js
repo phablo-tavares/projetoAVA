@@ -2,6 +2,11 @@ $(document).ready(function () {
   let url = "/card-cursos-matriculados";
   let token = $("#token").val();
   exibirCardDosCursos(url, token, "");
+
+  $(".nav-link").click(function () {
+    $(".nav-link").removeClass("active");
+    $(this).addClass("active");
+  });
 });
 
 function ToggleInformacoesAluno() {

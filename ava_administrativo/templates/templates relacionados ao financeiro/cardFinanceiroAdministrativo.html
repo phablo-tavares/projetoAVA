@@ -11,7 +11,7 @@
       <div class="col-12 col-sm-6 col-md-4">
         <div class="info-box">
           <span class="info-box-icon bg-danger elevation-1"
-            ><ion-icon name="close-circle-outline" size="large"></ion-icon
+            ><ion-icon name="warning-outline" style="font-size: 40px"></ion-icon
           ></span>
 
           <div class="info-box-content">
@@ -26,8 +26,8 @@
       <div class="col-12 col-sm-6 col-md-4">
         <div class="info-box">
           <span class="info-box-icon bg-info elevation-1"
-            ><ion-icon name="warning-outline" size="large"></ion-icon
-          ></span>
+            ><ion-icon name="information-circle-outline" style="font-size: 40px"></ion-icon>
+          </span>
 
           <div class="info-box-content">
             <span class="info-box-text">Parcelas a Receber</span>
@@ -41,7 +41,7 @@
       <div class="col-12 col-sm-6 col-md-4">
         <div class="info-box">
           <span class="info-box-icon bg-success elevation-1"
-            ><ion-icon name="checkbox-outline" size="large"></ion-icon
+            ><ion-icon name="checkbox-outline" style="font-size: 40px"></ion-icon
           ></span>
 
           <div class="info-box-content">
@@ -62,23 +62,34 @@
         </div>
         <div id="collapse" class="collapse" data-parent="#accordion">
           <div class="card-body">
-            <form id="cadastrarParcela">
+            <form
+              id="cadastrarParcela"
+              onsubmit="enviarParcela('{{urlEnviarParcela}}','{{csrf_token}}','{{urlCardFinanceiroAdministrativo}}'); return false"
+            >
               <div class="form-group">
                 <label for="aluno" class="">Aluno: </label>
-                <select class="form-control" id="aluno" name="aluno">
+                <select
+                  class="form-control"
+                  id="aluno"
+                  name="aluno"
+                  required
+                  onchange="alterarCursos('{{csrf_token}}')"
+                >
                   {% for aluno in alunos %}
                   <option value="{{aluno.id}}">{{aluno.nome}}</option>
                   {% endfor %}
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="curso" class="">Curso</label>
-                <select class="form-control" id="curso" name="curso">
-                  {% for curso in cursos %}
-                  <option value="{{curso.id}}">{{curso.nome}}</option>
-                  {% endfor %}
-                </select>
+              <div id="containerSelectCursos">
+                <div class="form-group">
+                  <label for="curso" class="">Curso</label>
+                  <select class="form-control" id="curso" name="curso" required>
+                    {% for curso in cursos %}
+                    <option value="{{curso.id}}">{{curso.nome}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
               </div>
 
               <div class="form-group">
@@ -93,6 +104,7 @@
                     id="valorDaParcela"
                     name="valorDaParcela"
                     oninput="limitarCasasDecimais(this)"
+                    required
                   />
                 </div>
               </div>
@@ -104,29 +116,29 @@
                   class="form-control"
                   id="dataDeVencimento"
                   name="dataDeVencimento"
+                  required
                 />
               </div>
 
               <div class="form-group">
                 <label for="arquivo" class="">Boleto</label>
-                <input type="file" class="form-control-file" id="arquivo" name="arquivo" />
+                <input type="file" class="form-control-file" id="arquivo" name="arquivo" required />
               </div>
 
               <div class="form-group">
                 <label for="pagamentoRealizado" class="">Parcela já foi paga</label>
-                <select class="form-control" id="pagamentoRealizado" name="pagamentoRealizado">
+                <select
+                  class="form-control"
+                  id="pagamentoRealizado"
+                  name="pagamentoRealizado"
+                  required
+                >
                   <option value="sim">Sim</option>
                   <option value="nao">Não</option>
                 </select>
               </div>
 
-              <button
-                class="btn btn-sm btn-primary"
-                onclick="enviarParcela('{{urlEnviarParcela}}','{{csrf_token}}','{{urlCardFinanceiroAdministrativo}}')"
-                type="button"
-              >
-                Enviar
-              </button>
+              <button class="btn btn-sm btn-primary" type="submit">Enviar</button>
             </form>
           </div>
         </div>

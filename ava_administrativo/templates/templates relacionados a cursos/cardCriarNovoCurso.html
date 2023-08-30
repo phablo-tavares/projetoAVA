@@ -9,24 +9,23 @@
         Voltar
       </button>
       <h3 class="card-title" id="cardHeaderEditarDados">Criar um novo curso</h3>
-      <button
-        class="btn btn-dark btn-sm"
-        style="float: right"
-        onclick="salvarNovoCurso('{{urlSalvarCurso}}','{{csrf_token}}','{{urlCardGerenciarCursos}}')"
-      >
-        Salvar
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
-    <form action="" id="dadosParaCriacaoDeUmNovoCurso">
+    <form
+      action=""
+      id="dadosParaCriacaoDeUmNovoCurso"
+      onsubmit="salvarNovoCurso('{{urlSalvarCurso}}','{{csrf_token}}','{{urlCardGerenciarCursos}}') ; return false"
+    >
       <div class="form-group row">
         <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nomeDoCurso"
           >Nome do curso</label
         >
         <input class="form-control col" id="nomeDoCurso" name="nomeDoCurso" type="text" required />
       </div>
+      <button class="btn btn-success btn-sm mt-4" type="submit">Salvar</button>
     </form>
   </div>
 </div>

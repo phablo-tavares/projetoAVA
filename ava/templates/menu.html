@@ -107,10 +107,14 @@
                with font-awesome or any other icon font library -->
               <li class="nav-item">
                 <a
-                  class="nav-link d-flex justify-content-start"
+                  class="nav-link d-flex justify-content-start d-flex align-items-center justify-content-start active"
                   onclick="exibirCardDosCursos('{{urlCursosMatriculados}}','{{csrf_token}}','{{aluno.id}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="book-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>AVA</p>
                 </a>
               </li>
@@ -118,10 +122,14 @@
               <li class="nav-item">
                 <a
                   id="boletimDeDesempenho"
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start"
                   onclick="exibirCardBoletimDeDesempenhoDoAluno('{{urlBoletimDeDesempenho}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="analytics-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Boletim de Desempenho</p>
                 </a>
               </li>
@@ -130,10 +138,14 @@
                 <a
                   id="financeiro"
                   href="#"
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start"
                   onclick="exibirCardFinanceiroDoAluno('{{urlFinanceiro}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-clipboard"></i>
+                  <ion-icon
+                    name="card-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Financeiro</p>
                 </a>
               </li>

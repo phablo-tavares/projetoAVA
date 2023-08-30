@@ -96,6 +96,7 @@ def CardMateriaisDaMateria(request):
     except:
         alunoJaFinalizouAProva = False
 
+    existeQuestaoCadastradaNaProva = False
     if prova is not None:
         existeQuestaoCadastradaNaProva = Questao.objects.filter(
             prova_id=prova.id).exists()

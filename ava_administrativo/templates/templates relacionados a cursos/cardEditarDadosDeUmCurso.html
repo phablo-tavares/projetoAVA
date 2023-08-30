@@ -9,19 +9,16 @@
         Voltar
       </button>
       <h3 class="card-title" id="cardHeaderEditarDados">Editar Dados do Curso - {{curso.nome}}</h3>
-      <button
-        class="btn btn-secondary btn-sm"
-        style="float: right"
-        onclick=" salvarEdicaoNoCurso('{{urlSalvarCurso}}', '{{csrf_token}}', '{{curso.id}}', '{{urlCardGerenciarCursos}}')"
-      >
-        Salvar Edição
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
     <div class="container">
-      <form action="" method="post" id="dadosParaEdicaoDoCurso">
+      <form
+        id="dadosParaEdicaoDoCurso"
+        onsubmit=" salvarEdicaoNoCurso('{{urlSalvarCurso}}', '{{csrf_token}}', '{{curso.id}}', '{{urlCardGerenciarCursos}}'); return false"
+      >
         <div class="form-group row">
           <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nomeDoCurso"
             >Nome</label
@@ -35,6 +32,7 @@
             required
           />
         </div>
+        <button class="btn btn-info btn-sm mt-4" type="submit">Salvar Edição</button>
       </form>
     </div>
   </div>

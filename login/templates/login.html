@@ -21,6 +21,7 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}" />
   </head>
+
   <body class="hold-transition login-page">
     <div class="login-box">
       <!-- /.login-logo -->
@@ -40,10 +41,10 @@
             {% csrf_token %}
 
             <div class="input-group mb-3">
-              <input type="text" name="cpf" id="cpf" class="form-control" placeholder="CPF" />
+              <input type="text" name="cpf" id="cpf" class="form-control" placeholder="Usuário" />
               <div class="input-group-append">
                 <div class="input-group-text">
-                  <span class="fa fa-address-card"></span>
+                  <ion-icon name="person-circle-outline" style="font-size: 21px"></ion-icon>
                 </div>
               </div>
             </div>
@@ -83,5 +84,11 @@
     <script src="{ % static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <!-- AdminLTE App -->
     <script src="{ % static 'dist/js/adminlte.min.js' %}"></script>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

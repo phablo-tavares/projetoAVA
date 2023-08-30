@@ -2,19 +2,15 @@
   <div class="card-header">
     <div class="d-flex align-items-center justify-content-between">
       <h3 class="card-title" id="cardHeaderEditarDados">Editar Dados Pessoais - {{aluno.nome}}</h3>
-      <button
-        class="btn btn-secondary btn-sm"
-        style="float: right"
-        onclick="salvarEdicaoAluno('{{urlSalvarEdicao}}','{{csrf_token}}');"
-      >
-        Salvar Edição
-      </button>
     </div>
   </div>
 
   <div class="card-body">
     <div class="container">
-      <form action="" method="post" id="dadosPessoaisDoAluno">
+      <form
+        id="dadosPessoaisDoAluno"
+        onsubmit="salvarEdicaoAluno('{{urlSalvarEdicao}}','{{csrf_token}}'); return false"
+      >
         <div class="form-group row">
           <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nome">Nome</label>
           <input
@@ -91,6 +87,7 @@
             <option value="O">Outro</option>
           </select>
         </div>
+        <button class="btn btn-dark btn-sm mt-3" type="submit">Salvar Edição</button>
       </form>
     </div>
   </div>

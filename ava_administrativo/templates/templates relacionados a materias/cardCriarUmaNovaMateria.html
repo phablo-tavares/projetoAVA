@@ -9,17 +9,14 @@
         Voltar
       </button>
       <h3 class="card-title" id="cardHeaderEditarDados">Criar uma nova matéria</h3>
-      <button
-        class="btn btn-dark btn-sm"
-        style="float: right"
-        onclick="salvarNovaMateria('{{urlSalvarMateria}}','{{csrf_token}}','{{urlCardGerenciarMaterias}}')"
-      >
-        Salvar
-      </button>
+      <div></div>
     </div>
   </div>
 
-  <div class="card-body">
+  <div
+    class="card-body"
+    onsubmit="salvarNovaMateria('{{urlSalvarMateria}}','{{csrf_token}}','{{urlCardGerenciarMaterias}}'); return false"
+  >
     <form action="" id="dadosParaCriacaoDeUmaNovaMateria">
       <div class="form-group row">
         <label class="col-12 col-sm-2 d-flex align-items-center m-0" for="nomeDaMateria"
@@ -51,6 +48,7 @@
         </div>
       </div>
       {% endif %}
+      <button class="btn btn-success btn-sm mt-4" type="submit">Salvar</button>
     </form>
   </div>
 </div>

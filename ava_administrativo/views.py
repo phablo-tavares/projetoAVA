@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from ava.models import Aluno, Curso, ProvaRealizadaPeloAluno, Prova, Questao, Materia, Material, MateriaDoCurso, BoletimDeDesempenhoDoAluno, Parcela
+from ava.models import Aluno, Curso, Matricula, ProvaRealizadaPeloAluno, Prova, Questao, Materia, Material, MateriaDoCurso, BoletimDeDesempenhoDoAluno, Parcela
 from ava.views import CardFinanceiro, CardBoletimDeDesempenho
 import json
 from django.http import JsonResponse
@@ -10,7 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 from decimal import Decimal
 from rest_framework import status
-from django.contrib.auth.hashers import make_password
+from django.core.files.storage import default_storage
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -50,7 +50,6 @@ def CardGerenciarAlunos(request):
         'alunos': alunos,
         'urlCardGerenciarAlunos': '/card-gerenciar-alunos',
         'urlExcluirAluno': '/excluir-aluno',
-        'urlCardVisualizarDadosDoAluno': '/card-visualizar-dados-do-aluno',
         'urlCardVisualizarDadosDoAluno': '/card-visualizar-dados-do-aluno',
         'urlCardEditarDadosPessoaisDeUmAluno': '/card-editar-dados-pessoais-de-um-aluno',
         'urlCadastrarAluno': '/cadastrar-aluno',
@@ -420,16 +419,23 @@ def SalvarMaterial(request):
 
 
 @login_required(login_url="/")
-def ExcluirMateria(request):
+def ExcluirMaterial(request):
     id = request.POST['id']
-    Materia.objects.get(id=id).delete()
+    material = Material.objects.get(id=id)
+
+    url = 'c:/Users/User/Desktop/cett/projetoAVA/mediaFiles' + \
+        material.anexo.name[6:]
+    if default_storage.exists(url):
+        default_storage.delete(url)
+
+    material.delete()
     return redirect('/')
 
 
 @login_required(login_url="/")
-def ExcluirMaterial(request):
+def ExcluirMateria(request):
     id = request.POST['id']
-    Material.objects.get(id=id).delete()
+    Materia.objects.get(id=id).delete()
     return redirect('/')
 
 
@@ -510,33 +516,41 @@ def ExcluirProva(request):
 
 @login_required(login_url="/")
 def CardFinanceiroAdministrativo(request):
-    parcelas = Parcela.objects.all()
-    if len(parcelas) == 0:
-        parcelas = None
-
     qtdParcelasAtrasadas = 0
     qtdParcelasPendentes = 0
     qtdParcelasPagas = 0
 
-    for parcela in parcelas:
-        if parcela.pagamentoRealizado:
-            qtdParcelasPagas += 1
-        elif parcela.parcelaVencida:
-            qtdParcelasAtrasadas += 1
-            qtdParcelasPendentes += 1
-        else:
-            qtdParcelasPendentes += 1
+    parcelas = Parcela.objects.all()
+    if len(parcelas) == 0:
+        parcelas = None
+    else:
+        for parcela in parcelas:
+            if parcela.pagamentoRealizado:
+                qtdParcelasPagas += 1
+            elif parcela.parcelaVencida:
+                qtdParcelasAtrasadas += 1
+                qtdParcelasPendentes += 1
+            else:
+                qtdParcelasPendentes += 1
+        parcelas = parcelas.order_by('dataDeVencimento')
 
+    cursos = []
     alunos = Aluno.objects.all()
     if len(alunos) == 0:
         alunos = None
-
-    cursos = Curso.objects.all()
-    if len(cursos) == 0:
         cursos = None
+    else:
+        alunos = alunos.order_by('id')
+        aluno1 = alunos[0]
+        matriculasDoAluno = Matricula.objects.filter(aluno=aluno1).all()
+        if len(matriculasDoAluno) == 0:
+            cursos = None
+        else:
+            for matricula in matriculasDoAluno:
+                cursos.append(matricula.curso)
 
     context = {
-        'parcelas': parcelas.order_by('dataDeVencimento'),
+        'parcelas': parcelas,
         'alunos': alunos,
         'cursos': cursos,
         'qtdParcelasAtrasadas': qtdParcelasAtrasadas,
@@ -696,3 +710,19 @@ def ExcluirNotificacaoAluno(request):
     aluno.notificacao = ""
     aluno.save()
     return redirect('/')
+
+
+@login_required(login_url="/")
+def AlterarCurso(request):
+    idAluno = int(request.GET['idAluno'])
+    aluno = Aluno.objects.get(id=idAluno)
+
+    cursos = []
+    matriculasDoAluno = Matricula.objects.filter(aluno=aluno).all()
+    if len(matriculasDoAluno) == 0:
+        cursos = None
+    else:
+        for matricula in matriculasDoAluno:
+            cursos.append(matricula.curso)
+
+    return JsonResponse(json.dumps(cursos, indent=4, cls=CustomEncoder), safe=False)

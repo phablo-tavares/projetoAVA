@@ -73,7 +73,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
           <!-- Sidebar user (optional) -->
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="user-panel mt-3 pb-3 mb-3 ml-3 d-flex">
             <img
               src="{% static 'img/graduado.png' %}"
               class="img-circle elevation-2"
@@ -97,19 +97,27 @@
                with font-awesome or any other icon font library -->
               <li class="nav-item">
                 <a
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start active"
                   onclick="exibirCardGerenciarAlunos('{{urlCardGerenciarAlunos}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="people-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Gerenciar Alunos</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start"
                   onclick="exibirCardGerenciarCursos('{{urlCardGerenciarCursos}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="book-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Gerenciar Cursos</p>
                 </a>
               </li>
@@ -118,16 +126,24 @@
                   class="nav-link"
                   onclick="exibirCardGerenciarMaterias('{{urlCardGerenciarMaterias}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="pencil-outline"
+                    style="font-size: 20px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Gerenciar Matérias</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start"
                   onclick="exibirCardGerenciarNotificacoes('{{urlCardGerenciarNotificacoes}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-list"></i>
+                  <ion-icon
+                    name="notifications-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Gerenciar Notificações</p>
                 </a>
               </li>
@@ -135,10 +151,14 @@
                 <a
                   id="financeiro"
                   href="#"
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center justify-content-start"
                   onclick="exibirCardFinanceiroAdministrativo('{{urlCardFinanceiroAdministrativo}}','{{csrf_token}}')"
                 >
-                  <i class="nav-icon fa fa-clipboard"></i>
+                  <ion-icon
+                    name="card-outline"
+                    style="font-size: 24px"
+                    class="mr-2 ml-1"
+                  ></ion-icon>
                   <p>Financeiro</p>
                 </a>
               </li>
@@ -188,6 +208,12 @@
     <script src="{% static 'js/generalJs/general.js'%}"></script>
     <script src="{% static 'css/myStyles.css'%}"></script>
 
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
     <!-- jQuery -->
     <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
@@ -207,6 +233,7 @@
       rel="stylesheet"
     />
     <!-- DataTables  & Plugins -->
+
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>

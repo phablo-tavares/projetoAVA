@@ -9,18 +9,16 @@
         Voltar
       </button>
       <h3 class="card-title">{{materia.nome}} - {{prova.nome}}</h3>
-      <button
-        class="btn btn-secondary btn-sm"
-        onclick="SwallfirefinalizarProva('{{prova.id}}','{{csrf_token}}','true','{{urlBoletimDeDesempenho}}')"
-      >
-        Finalizar Prova
-      </button>
+      <div></div>
     </div>
   </div>
 
   <div class="card-body">
     <div class="container">
-      <form action="" method="post" id="prova">
+      <form
+        id="prova"
+        onsubmit="SwallfirefinalizarProva('{{prova.id}}','{{csrf_token}}','true','{{urlBoletimDeDesempenho}}') ; return false"
+      >
         {% for questao in questoes %}
         <div class="row">
           <div class="col bg-light card">
@@ -85,6 +83,7 @@
           </div>
         </div>
         {% endfor %}
+        <button class="btn btn-secondary btn-sm mt-4" type="submit">Finalizar Prova</button>
       </form>
     </div>
   </div>

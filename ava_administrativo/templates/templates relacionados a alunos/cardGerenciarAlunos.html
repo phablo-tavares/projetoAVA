@@ -13,7 +13,10 @@
         </div>
         <div id="collapse" class="collapse" data-parent="#accordion">
           <div class="card-body">
-            <form id="cadastrarAluno">
+            <form
+              id="cadastrarAluno"
+              onsubmit="cadastrarAluno('{{urlCadastrarAluno}}','{{csrf_token}}','{{urlCardGerenciarAlunos}}') ; return false"
+            >
               <div class="form-group">
                 <label class="" for="nome">Nome Completo</label>
                 <input class="form-control" id="nome" name="nome" type="text" required />
@@ -82,13 +85,7 @@
                 <input class="form-control" id="senha" name="senha" type="password" required />
               </div>
 
-              <button
-                class="btn btn-primary"
-                onclick="cadastrarAluno('{{urlCadastrarAluno}}','{{csrf_token}}','{{urlCardGerenciarAlunos}}')"
-                type="button"
-              >
-                Cadastrar
-              </button>
+              <button class="btn btn-primary" type="submit">Cadastrar</button>
             </form>
           </div>
         </div>
